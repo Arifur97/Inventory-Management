@@ -1,0 +1,431 @@
+/* IMAGES ANIMATIONS CSS */
+/* Every image MUST have a image-group */
+
+.image-group {
+  overflow: hidden;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+
+.image-group img {
+  cursor: pointer;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+
+/* Black and White */
+/* Used on image */
+/* ------------------------------------------------------------ */
+.black-white:hover,
+.black-white.active {
+  /* filter: grayscale(1) brightness(40%); */
+  background: linear-gradient(180deg, #ca0b81 2%, #ffab1d 80%);
+  /* filter: opacity(80%); */
+
+}
+
+/* Gradient */
+/* Used on image-group */
+/* ------------------------------------------------------------ */
+.gradient:hover::after,
+.gradient.active::after {
+  cursor: pointer;
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(243, 246, 251, 0.5) 0%,
+    rgba(114, 23, 91, 0.75) 100%
+  );
+}
+
+/* Zoom In*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.zoom-in:hover,
+.zoom-in.active {
+  transform: scale(1.2);
+}
+
+/* Zoom Out*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.zoom-out:hover,
+.zoom-out.active {
+  transform: scale(0.9);
+}
+
+/* Blurred*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.blurred:hover,
+.blurred.active {
+  filter: blur(2px);
+}
+
+/* Blurred-reverse*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.blurred-reverse {
+  filter: blur(2px);
+}
+
+.blurred-reverse:hover,
+.blurred-reverse.active {
+  filter: blur(0px);
+}
+
+/* Emerge*/
+/* Used on image-group */
+/* ------------------------------------------------------------ */
+.emerge {
+  position: relative;
+  overflow: hidden;
+}
+
+.emerge:hover .overlay,
+.emerge.active .overlay {
+  background: rgba(0, 0, 0, 0.75);
+  position: absolute;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.emerge .content {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  color: #fff;
+
+  transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+
+  transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+}
+
+.emerge:hover .content,
+.emerge.active .content {
+  opacity: 1;
+  top: 50%;
+  left: 50%;
+}
+
+.emerge .top {
+  top: 25%;
+}
+
+.emerge .right {
+  left: 75%;
+}
+
+.emerge .bottom {
+  top: 75%;
+}
+
+.emerge .left {
+  left: 25%;
+}
+
+/* Flip*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.flip:hover,
+.flip.active {
+  transform: rotateX(360deg);
+  transition: transform 2s;
+}
+
+/* Flip*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.disappear:hover,
+.disappear.active {
+  opacity: 0;
+  width: 5%;
+  transition: 4s;
+}
+
+/* Shape*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.shape:hover,
+.shape.active {
+  border-radius: 100%;
+}
+
+/* Shape-reverse*/
+/* Used on image */
+/* ------------------------------------------------------------ */
+.shape-reverse {
+  border-radius: 100%;
+}
+
+.shape-reverse:hover,
+.shape-reverse.active {
+  border-radius: 0%;
+}
+
+/* Rotating */
+/* Used on image */
+/* ------------------------------------------------------------ */
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.rotating:hover,
+.rotating.active {
+  animation: rotating 2.5s linear infinite;
+  -moz-animation: rotating 2.5s linear infinite;
+  -ms-animation: rotating 2.5s linear infinite;
+  -webkit-animation: rotating 2.5s linear infinite;
+  -o-animation: rotating 2.5s linear infinite;
+}
+
+/* Waving */
+/* Used on image */
+/* ------------------------------------------------------------ */
+@-webkit-keyframes waving /* Safari and Chrome */ {
+  from {
+    transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes waving {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(100deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-80deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.waving:hover,
+.waving.active {
+  animation: waving 2.5s linear infinite;
+  -moz-animation: waving 2.5s linear infinite;
+  -ms-animation: waving 2.5s linear infinite;
+  -webkit-animation: waving 2.5s linear infinite;
+  -o-animation: waving 2.5s linear infinite;
+}
+
+/* Walking */
+/* Used on image */
+/* ------------------------------------------------------------ */
+
+/* Left */
+@-webkit-keyframes walking-l /* Safari and Chrome */ {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes walking-l {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.walking-l:hover img,
+.walking-l.active img {
+  animation: walking-l 2.5s linear infinite;
+  -moz-animation: walking-l 2.5s linear infinite;
+  -ms-animation: walking-l 2.5s linear infinite;
+  -webkit-animation: walking-l 2.5s linear infinite;
+  -o-animation: walking-l 2.5s linear infinite;
+}
+
+/* Right */
+@-webkit-keyframes walking-r /* Safari and Chrome */ {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes walking-r {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.walking-r:hover img,
+.walking-r.active img {
+  animation: walking-r 2.5s linear infinite;
+  -moz-animation: walking-r 2.5s linear infinite;
+  -ms-animation: walking-r 2.5s linear infinite;
+  -webkit-animation: walking-r 2.5s linear infinite;
+  -o-animation: walking-r 2.5s linear infinite;
+}
+/* Walking  */
+
+@-webkit-keyframes walking /* Safari and Chrome */ {
+  0% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(100%) scaleX(-1);
+  }
+  80% {
+    transform: translateX(0%) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0%) scaleX(1);
+  }
+}
+
+@keyframes walking {
+  0% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(100%) scaleX(-1);
+  }
+  80% {
+    transform: translateX(0%) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0%) scaleX(1);
+  }
+}
+
+.walking:hover img,
+.walking.active img {
+  animation: walking 5s linear infinite;
+  -moz-animation: walking 5s linear infinite;
+  -ms-animation: walking 5s linear infinite;
+  -webkit-animation: walking 5s linear infinite;
+  -o-animation: walking 5s linear infinite;
+}
+
+/* Inclined */
+/* Used on image or image-group*/
+/* Can be used on image-group with anothers animations, for example: layers */
+/* ------------------------------------------------------------ */
+
+/* Left */
+.inclined-l:hover,
+.inclined-l.active {
+  transform: rotate(-25deg) skew(20deg) scale(0.85);
+}
+
+/* Right */
+.inclined-r:hover,
+.inclined-r.active {
+  transform: rotate(25deg) skew(-20deg) scale(0.85);
+}
+
+/* Layers (3D) */
+/* Used on image-group */
+/* 4 layers */
+/* ------------------------------------------------------------ */
+
+.layers {
+  min-height: 30rem;
+  overflow: visible;
+  margin: auto;
+}
+
+.layers img {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.layers:hover img:nth-child(1),
+.layers.active img:nth-child(1) {
+  transform: translate(30px, -30px);
+  opacity: 0.3;
+}
+
+.layers:hover img:nth-child(2),
+.layers.active img:nth-child(2) {
+  transform: translate(60px, -60px);
+  opacity: 0.6;
+}
+
+.layers:hover img:nth-child(3),
+.layers.active img:nth-child(3) {
+  transform: translate(90px, -90px);
+  opacity: 0.8;
+}
+
+.layers:hover img:nth-child(4),
+.layers.active img:nth-child(4) {
+  transform: translate(120px, -120px);
+  opacity: 1;
+}

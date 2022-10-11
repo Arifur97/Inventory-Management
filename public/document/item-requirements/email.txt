@@ -1,0 +1,39 @@
+We need two fixes:
+
+1) Remove condition of customer, warehouse etc on Product search. Please tell us which code to remove to disable the condition. We need product search from all list where product active=yes. Please show us in one form (query & where to apply) - eg Sale Return form and we will take care of rest forms.
+
+2) Foreign values for Product table:
+We need Type, Is_Merchandise fields which gets the value from 2 different foreign tables: 
+product_type(id, value)  & Is_Merchandise(id, value)
+
+Table: product_type
+
+id   type
+1    stockable
+2    combo
+3    non-stockable
+4    temporary
+
+
+Table: Is_Merchandise
+
+id  type
+1   yes
+2   no
+
+(Similar to Category & brand table, we want to add more foreign tables in product. Please tell us where is table like brand and category added, so we can add other tables and access it).We need file location where you make changes for this issues and which file? Like as model, view, controller and route. Please mention which code area you are focusing and also send us screenshot.
+
+3) Current bug in product index file, product_type and is_merchandise is searchable but other fields like unit, price is not searchable. Now all fields are not searchable.
+
+
+4) For Print View, on any index table print, on top left should display company logo and on top right side, we need the form name (Eg Sale, Purchase, Sale Return, Product List etc.). Can you show us which place to edit the code and how to include the form name on right side (if we pass form_name as parameter from every form) and on left side company logo from general settings. Please mention which place you change the code, so we can alter in the future for other forms.
+
+5) How can we implement RTL for arabic language?
+
+
+
+
+
+
+
+ 

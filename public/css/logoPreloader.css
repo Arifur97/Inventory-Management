@@ -1,0 +1,70 @@
+/* The Container */
+.logo-container {
+    /* align children in the center */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    /* a circle with 60x60 pixels */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+
+
+  .background,
+  .spinner {
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+  }
+
+
+
+  /* The button background layer */
+.background {
+    border-radius: 50%;
+    background-image: linear-gradient(0deg, #0f1013, #252730);
+    box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.6),
+      0 4px 6px 1px rgba(0, 0, 0, 0.3),
+      0 1px 2px 1px rgba(0, 0, 0, 0) inset,
+      0 18px 32px -2px rgba(255, 255, 255, 0.1) inset;
+  }
+
+
+  /* Bring logo to front */
+  .logo {
+    z-index: 2;
+  }
+
+
+
+/* Glowing Spinner*/
+  .spinner {
+    border-radius: 50%;
+    border-top: 2px solid #ae34db;
+
+    /* glowing with shadow (30% of #ae34db) */
+    box-shadow: 0 -5px 5px #ae34db4d;
+
+    /* add spin animation */
+    animation: spin 1s linear infinite;
+  }
+
+  /* Rotate the light spinner in 360 degrees angle */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+image,name,code,SKU,type,merchandise,active,brand,category,unit_code,cost,price,product_details,variant_name,item_code,additional_price
+,trinket1,TR-001,TR-001-SKU,Stockable,yes,yes,Lotto,accessories,pc,15,20,,,,
+,trinket2,TR-002,TR-002-SKU,Non-stockable,no,yes,HP,food,kg,10,15,,,,
+,trinket3,TR-003,TR-003-SKU,Combo,no,yes,HP,food,kg,10,15,,,,

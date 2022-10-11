@@ -1,0 +1,18 @@
+1) Include css on top
+<html>
+    <head>
+        <!-- Bootstrap CSS-->
+        <link rel="stylesheet" href="<?php echo asset('public/css/images.css') ?>" type="text/css">
+    </head>
+
+</html>
+(@end section) (if present)
+
+
+2) Add image-group class to div tag of the table
+<div class="table-responsive image-group">
+
+3) Add class type (eg zoom-in), on td tag (Can use more than one. eg. zoom-in black-white
+<td>
+    <img src="{{asset("public/images/product/$product_data->image") }}" class="product_image zoom-in black-white" alt="product image" width="80" height="80"/>
+</td>

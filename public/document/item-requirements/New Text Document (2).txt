@@ -1,0 +1,4 @@
+standard =  Stockable   = 1
+digital = Non-stockable = 2
+combo = Combo = 3
+Temporary = 4

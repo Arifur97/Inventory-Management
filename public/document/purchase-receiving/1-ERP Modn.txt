@@ -1,0 +1,20 @@
+Item Details Form:
+1) Add field "StockReOrderPoint" field as Long
+2) Vendor should be from VendTable drop down list
+
+Item Requirement Form:
+1) By Deafult, for any item added, the unit for that item (only in this form) is BOX (For all other forms, by default unit should be from ItemDeatils Table). Its only default value, user can change it by selecting other unit, if they require.
+2) In Item Search (Where it searches as per ItemNo, ItemName. Also add VendorItemCode from ItemDetails table)
+3) When Status is In Process, or draft, the user can edit order or add or delete items on the list. But once Ordered, then no edit possible (Except Header Note field)
+
+
+Goods Received Note
+1) Qty should be 1 by default when item is added
+2) UnitBase should be by default as per ItemDetails Table
+3) Qty or Factor changed then QtyBase is not changing (It was working before) & should calculate auto change on key pressed
+4) On Save (Or draft), it used to display in descending order as it was entered but now it is showing inascending order (Something has changed in the coding) (Before it was working fine)(i.e. Descnding on Draft and ascending SNo after Confirmed)
+5) Vendor is Mandatory field. On click of Confirm button, if vendor is not selected then it should display Message, Please Select Vendor. (Confirm should only work after vendor is selected) 
+
+
+Item Consumption
+1) Unit should by default as per ItemDetails table

@@ -121,434 +121,6 @@
                     <th class="not-exported" style="border-radius: 0px 5px 5px 0px">{{trans('file.action')}}</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($lims_work_order_all as $key=>$work_order)
-                <?php
-                    if($work_order->work_order_status == 1){
-                        $status = trans('file.Completed');
-                    }
-                    elseif ($work_order->work_order_status == 2) {
-                        $status = trans('file.Pending');
-                        }
-                    else{
-                        $status = trans('file.Draft');
-                    }
-                ?>
-
-                @if($work_order->work_order_status == 1)
-                    <tr class="workOrder-link" style="color: black;">
-                        <td>{{$key}}</td>
-                        <td class="id">{{ $work_order->id }}</td>
-                        <td>{{ $work_order->reference_no ?? "" }}</td>
-                        <td>{{ date($general_setting->date_format, strtotime($work_order->created_at->toDateString())) }}</td>
-                        @if($work_order->work_order_status == 1)
-                            <td><div class="badge badge-success">{{$status}}</div></td>
-                        @elseif ($work_order->work_order_status == 2)
-                            <td><div class="badge badge-black text-bold">{{$status}}</div></td>
-                        @else
-                            <td><div class="badge badge-primary text-bold">{{$status}}</div></td>
-                        @endif
-                        @if($work_order->warehouse_id)
-                        <td>{{ $work_order->warehouse->name }}</td>
-                        @else
-                        <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                                <embed src="{{ explode(',', $work_order->documents->documents)[0] }}" type="" height="80" width="80" class="product_image">
-
-                            @endif
-                        </td>
-                        <td>
-                            @if ($work_order->order_type_tags ?? false)
-                                {{ $work_order->order_type_tags }}
-                            @endif
-                        </td>
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->name }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->email }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->phone_number }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->user_id)
-                            <td>{{ $work_order->user->name ?? '' }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                                @foreach (explode(',', $work_order->documents->documents) as $li)
-                                    @php
-                                        $tempDoc = explode('/', $li);
-                                    @endphp
-                                    <ul>
-                                        <li>
-                                            <a href="{{ $li }}" target="_blank" class="attachment-index">{{ end($tempDoc) }}</a>
-                                        </li>
-                                    </ul>
-                                @endforeach
-                            @endif
-                        </td>
-                        <td>{{ $work_order->work_order_note }}</td>
-                        <td>{{ $work_order->staff_note }}</td>
-                        <td>{{ $work_order->sales_reference_no }}</td>
-                        <td>{{ $work_order->priority }}</td>
-                        <td>{{ $work_order->send_to }}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                    <li>
-                                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i>  {{trans('file.View')}}</button>
-                                    </li>
-                                    @if(in_array("quotes-edit", $all_permission))
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('workorder.edit', $work_order->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
-                                    </li>
-                                    @endif
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_sale', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-cart"></i> {{trans('file.Create Sale')}}</a></button>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_purchase', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-basket"></i> {{trans('file.Create Purchase')}}</a></button>
-                                    </li>
-                                    <li class="divider"></li>
-
-                                    {{ Form::open(['route' => ['workorder.destroy', $work_order->id], 'method' => 'DELETE'] ) }}
-                                    <li>
-                                        <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
-                                    </li>
-                                    {{ Form::close() }}
-                                </ul>
-                            </div>
-                        </td>
-
-                    </tr>
-                @elseif($work_order->work_order_status == 2 && $work_order->priority == "Urgent" )
-                    <tr class="workOrder-link text-bold" style="color: crimson" >
-                        <td>{{$key}}</td>
-                        <td class="id">{{ $work_order->id }}</td>
-                        <td>{{ $work_order->reference_no ?? "" }}</td>
-                        <td>{{ date($general_setting->date_format, strtotime($work_order->created_at->toDateString())) }}</td>
-
-                        @if($work_order->work_order_status == 1)
-                            <td><div class="badge badge-success">{{$status}}</div></td>
-                        @elseif ($work_order->work_order_status == 2)
-                            <td><div class="badge badge-danger text-bold">{{$status}}</div></td>
-                        @else
-                            <td><div class="badge badge-primary text-bold">{{$status}}</div></td>
-                        @endif
-
-                        @if($work_order->warehouse_id)
-                        <td>{{ $work_order->warehouse->name }}</td>
-                        @else
-                        <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                                <embed src="{{ explode(',', $work_order->documents->documents)[0] }}" type="" height="80" width="80" class="product_image">
-                            @endif
-                        </td>
-                        <td>
-                            @if ($work_order->order_type_tags ?? false)
-                                {{ $work_order->order_type_tags }}
-                            @endif
-                        </td>
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->name }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->email }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->phone_number }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->user_id)
-                            <td>{{ $work_order->user->name ?? '' }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                            @foreach (explode(',', $work_order->documents->documents) as $li)
-                                @php
-                                    $tempDoc = explode('/', $li);
-                                @endphp
-                                <ul>
-                                    <li>
-                                        <a href="{{ $li }}" target="_blank" class="attachment-index">{{ end($tempDoc) }}</a>
-                                    </li>
-                                </ul>
-                            @endforeach
-                            @endif
-                        </td>
-                        <td>{{ $work_order->work_order_note }}</td>
-                        <td>{{ $work_order->staff_note }}</td>
-                        <td>{{ $work_order->sales_reference_no }}</td>
-                        <td>{{ $work_order->priority }}</td>
-                        <td>{{ $work_order->send_to }}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                    <li>
-                                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i>  {{trans('file.View')}}</button>
-                                    </li>
-                                    @if(in_array("quotes-edit", $all_permission))
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('workorder.edit', $work_order->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
-                                    </li>
-                                    @endif
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_sale', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-cart"></i> {{trans('file.Create Sale')}}</a></button>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_purchase', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-basket"></i> {{trans('file.Create Purchase')}}</a></button>
-                                    </li>
-                                    <li class="divider"></li>
-
-                                    {{ Form::open(['route' => ['workorder.destroy', $work_order->id], 'method' => 'DELETE'] ) }}
-                                    <li>
-                                        <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
-                                    </li>
-                                    {{ Form::close() }}
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                @elseif($work_order->work_order_status == 0)
-                    <tr class="workOrder-link font-italic" style="color: black;">
-                        <td>{{$key}}</td>
-                        <td class="id">{{ $work_order->id }}</td>
-                        <td>{{ $work_order->reference_no ?? "" }}</td>
-                        <td>{{ date($general_setting->date_format, strtotime($work_order->created_at->toDateString())) }}</td>
-
-                        @if($work_order->work_order_status == 1)
-                            <td><div class="badge badge-success">{{$status}}</div></td>
-                        @elseif ($work_order->work_order_status == 2)
-                            <td><div class="badge badge-black text-bold">{{$status}}</div></td>
-                        @else
-                            <td><div class="badge badge-primary text-bold">{{$status}}</div></td>
-                        @endif
-
-                        @if($work_order->warehouse_id)
-                        <td>{{ $work_order->warehouse->name }}</td>
-                        @else
-                        <td>N/A</td>
-                        @endif
-
-                        <td>
-                            @if ($work_order->documents ?? false)
-                                <embed src="{{ URL::to(explode(',', $work_order->documents->documents)[0]) }}" type="" height="80" width="80" class="product_image">
-                            @endif
-                        </td>
-                        <td>
-                            @if ($work_order->order_type_tags ?? false)
-                                {{ $work_order->order_type_tags }}
-                            @endif
-                        </td>
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->name }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->email }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->phone_number }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->user_id)
-                            <td>{{ $work_order->user->name ?? '' }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                            @foreach (explode(',', $work_order->documents->documents) as $li)
-                                @php
-                                    $tempDoc = explode('/', $li);
-                                @endphp
-                                <ul>
-                                    <li>
-                                        <a href="{{ $li }}" target="_blank" class="attachment-index">{{ end($tempDoc) }}</a>
-                                    </li>
-                                </ul>
-                            @endforeach
-                            @endif
-                        </td>
-                        <td>{{ $work_order->work_order_note }}</td>
-                        <td>{{ $work_order->staff_note }}</td>
-                        <td>{{ $work_order->sales_reference_no }}</td>
-                        <td>{{ $work_order->priority }}</td>
-                        <td>{{ $work_order->send_to }}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                    <li>
-                                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i>  {{trans('file.View')}}</button>
-                                    </li>
-                                    @if(in_array("quotes-edit", $all_permission))
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('workorder.edit', $work_order->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
-                                    </li>
-                                    @endif
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_sale', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-cart"></i> {{trans('file.Create Sale')}}</a></button>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_purchase', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-basket"></i> {{trans('file.Create Purchase')}}</a></button>
-                                    </li>
-                                    <li class="divider"></li>
-
-                                    {{ Form::open(['route' => ['workorder.destroy', $work_order->id], 'method' => 'DELETE'] ) }}
-                                    <li>
-                                        <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
-                                    </li>
-                                    {{ Form::close() }}
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                @else
-                    <tr class="workOrder-link text-bold" style="color: black;">
-                        <td>{{$key}}</td>
-                        <td class="id">{{ $work_order->id }}</td>
-                        <td>{{ $work_order->reference_no ?? "" }}</td>
-                        <td>{{ date($general_setting->date_format, strtotime($work_order->created_at->toDateString())) }}</td>
-
-                        @if($work_order->work_order_status == 1)
-                            <td><div class="badge badge-success">{{$status}}</div></td>
-                        @elseif ($work_order->work_order_status == 2)
-                            <td><div class="badge badge-pending text-bold">{{$status}}</div></td>
-                        @else
-                            <td><div class="badge badge-primary text-bold">{{$status}}</div></td>
-                        @endif
-
-                        @if($work_order->warehouse_id)
-                        <td>{{ $work_order->warehouse->name }}</td>
-                        @else
-                        <td>N/A</td>
-                        @endif
-
-                        <td>
-                            @if ($work_order->documents ?? false)
-                                <embed src="{{ URL::to(explode(',', $work_order->documents->documents)[0]) }}" type="" height="80" width="80" class="product_image">
-                            @endif
-                        </td>
-                        <td>
-                            @if ($work_order->order_type_tags ?? false)
-                                {{ $work_order->order_type_tags }}
-                            @endif
-                        </td>
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->name }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->email }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->customer_id)
-                            <td>{{ $work_order->customer->phone_number }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        @if($work_order->user_id)
-                            <td>{{ $work_order->user->name ?? '' }}</td>
-                        @else
-                            <td>N/A</td>
-                        @endif
-                        <td>
-                            @if ($work_order->documents ?? false)
-                            @foreach (explode(',', $work_order->documents->documents) as $li)
-                                @php
-                                    $tempDoc = explode('/', $li);
-                                @endphp
-                                <ul>
-                                    <li>
-                                        <a href="{{ $li }}" target="_blank" class="attachment-index">{{ end($tempDoc) }}</a>
-                                    </li>
-                                </ul>
-                            @endforeach
-                            @endif
-                        </td>
-                        <td>{{ $work_order->work_order_note }}</td>
-                        <td>{{ $work_order->staff_note }}</td>
-                        <td>{{ $work_order->sales_reference_no }}</td>
-                        <td>{{ $work_order->priority }}</td>
-                        <td>{{ $work_order->send_to }}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                    <li>
-                                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i>  {{trans('file.View')}}</button>
-                                    </li>
-                                    @if(in_array("quotes-edit", $all_permission))
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('workorder.edit', $work_order->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
-                                    </li>
-                                    @endif
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_sale', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-cart"></i> {{trans('file.Create Sale')}}</a></button>
-                                    </li>
-                                    <li>
-                                        <a class="btn btn-link" href="{{ route('quotation.create_purchase', ['id' => $work_order->id]) }}"><i class="fa fa-shopping-basket"></i> {{trans('file.Create Purchase')}}</a></button>
-                                    </li>
-                                    <li class="divider"></li>
-
-                                    {{ Form::open(['route' => ['workorder.destroy', $work_order->id], 'method' => 'DELETE'] ) }}
-                                    <li>
-                                        <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
-                                    </li>
-                                    {{ Form::close() }}
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                @endif
-
-                @endforeach
-            </tbody>
         </table>
     </div>
 </section>
@@ -801,16 +373,56 @@
     });
 
     $('#wrokOrder-table').DataTable( {
-        "order": [],
-        'language': {
-            'lengthMenu': '_MENU_ ',
-             "info":      '<small>{{trans("file.Showing")}} _START_ - _END_ (_TOTAL_)</small>',
-            "search":  '{{trans("file.Search")}}',
-            'paginate': {
-                    'previous': '<i class="dripicons-chevron-left"></i>',
-                    'next': '<i class="dripicons-chevron-right"></i>'
+        "responsive": true,
+        "fixedHeader": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+            url:"/workorder/json/data",
+            data:{
+                all_permission: all_permission,
+            },
+            dataType: "json",
+            type:"post"
+        },
+        "createdRow": function( row, data, dataIndex ) {
+            if(data['work_order_status'] == 2 && data['priority'] == "Urgent") {
+                $(row).attr('style', 'color: crimson');
+            } else {
+                $(row).attr('style', 'color: black');
             }
         },
+        "columns": [
+            {"data": "key"},
+            {"data": "id"},
+            {"data": "reference_no"},
+            {"data": "date"},
+            {"data": "status"},
+            {"data": "warehouse_id"},
+            {"data": "file_preview"},
+            {"data": "types"},
+            {"data": "customer_name"},
+            {"data": "customer_email"},
+            {"data": "customer_phone"},
+            {"data": "user_id"},
+            {"data": "attachments"},
+            {"data": "work_order_note"},
+            {"data": "staff_note"},
+            {"data": "sales_reference_no"},
+            {"data": "priority"},
+            {"data": "send_to"},
+            {"data": "actions"},
+        ],
+        'language': {
+            'lengthMenu': '_MENU_ ',
+            'info':      '<small>{{trans("file.Showing")}} _START_ - _END_ (_TOTAL_)</small>',
+            'search':  '{{trans("file.Search")}}',
+            'paginate': {
+                'previous': '<i class="dripicons-chevron-left"></i>',
+                'next': '<i class="dripicons-chevron-right"></i>'
+            }
+        },
+        order:[['1', 'desc']],
         'columnDefs': [
             {
                 "orderable": false,
@@ -922,7 +534,7 @@
             var api = this.api();
             datatable_sum(api, false);
         }
-    } );
+    });
 
     var workOrderDataId = [];
     $('#wrokOrder-table tbody').on('click', 'tr', function(e) {

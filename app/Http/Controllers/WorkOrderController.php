@@ -41,7 +41,7 @@ class WorkOrderController extends Controller
     public function index(Request $request)
     {
         $role = Role::find(Auth::user()->role_id);
-            if($role->hasPermissionTo('purchases-index')) {
+        if($role->hasPermissionTo('purchases-index')) {
 
             if($request->input('warehouse_id')) $warehouse_id = $request->input('warehouse_id');
             else $warehouse_id = null;
@@ -110,8 +110,185 @@ class WorkOrderController extends Controller
             $lims_customer_list = Customer::all();
             return view('work_order.index', compact( 'lims_account_list', 'lims_warehouse_list', 'lims_customer_list', 'all_permission', 'lims_work_order_all', 'warehouse_id', 'starting_date', 'ending_date', 'customer_id', 'lims_ordertype_list', 'order_type'));
         }
+
+        return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');    
+    }
+
+    public function workOrderData(Request $request)
+    {
+        $columns = array(
+            1 => 'created_at',
+            2 => 'reference_no',
+            3 => 'created_at',
+        );
+        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products')->orderBy('id', 'desc');
+        
+        $totalData = $lims_work_order->count();
+
+        $totalFiltered = $totalData;
+        if($request->input('length') != -1)
+            $limit = $request->input('length');
         else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+            $limit = $totalData;
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        $search = $request->input('search.value');
+        $lims_work_order_all = $lims_work_order
+            ->when(!empty($search), function ($query) use ($search) {
+                return $query->where('reference_no', 'LIKE', "%{$search}%");
+            })
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir)
+            ->get();
+
+        $totalFiltered = $lims_work_order
+            ->when(!empty($search), function ($query) use ($search) {
+                return $query->where('reference_no', 'LIKE', "%{$search}%");
+            })
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir)
+            ->count();
+
+        $data = [];
+        if(!empty($lims_work_order_all)) {
+            foreach ($lims_work_order_all as $key => $value) {
+                $nestedData['key'] = $key;
+                $nestedData['id'] = $value->id;
+                $nestedData['reference_no'] = $value->reference_no ?? '';
+                $nestedData['date'] = date(config('date_format'), strtotime($value->created_at->toDateString()));
+                
+                // work order status
+                $nestedData['work_order_status'] = $value->work_order_status;
+                if($value->work_order_status == 1) {
+                    $nestedData['status'] =  '<div class="badge badge-success">'. trans('file.Completed') .'</div>';
+                } elseif ($value->work_order_status == 2) {
+                    $nestedData['status'] =  '<div class="badge badge-danger text-bold">'. trans('file.Pending') .'</div>';
+                } else {
+                    $nestedData['status'] =  '<div class="badge badge-primary text-bold">'. trans('file.Draft') .'</div>';
+                }
+
+                // warehouse id
+                if($value->warehouse_id ?? false) {
+                    $nestedData['warehouse_id'] = $value->warehouse->name;
+                } else {
+                    $nestedData['warehouse_id'] = 'N/A';
+                }
+
+                // file preview
+                if($value->documents ?? false) {
+                    $temp_file_preview = explode(',', $value->documents->documents)[0];
+                    $nestedData['file_preview'] = '<embed src="'. $temp_file_preview .'" type="" height="80" width="80" class="product_image">';
+                }
+
+                // types
+                if($value->order_type_tags ?? false) {
+                    $nestedData['types'] = $value->order_type_tags;
+                }
+
+                // customer name
+                if($value->customer_id ?? false) {
+                    $nestedData['customer_name'] = $value->customer->name;
+                } else {
+                    $nestedData['customer_name'] = 'N/A';
+                }
+
+                // customer email
+                if($value->customer_id ?? false) {
+                    $nestedData['customer_email'] = $value->customer->email;
+                } else {
+                    $nestedData['customer_email'] = 'N/A';
+                }
+
+                // customer phone
+                if($value->customer_id ?? false) {
+                    $nestedData['customer_phone'] = $value->customer->phone_number;
+                } else {
+                    $nestedData['customer_phone'] = 'N/A';
+                }
+
+                // user name
+                if($value->user_id ?? false) {
+                    $nestedData['user_id'] = $value->user->name;
+                } else {
+                    $nestedData['user_id'] = 'N/A';
+                }
+
+                // attachments
+                if($value->documents ?? false) {
+                    $workorder_attachments = '';
+                    foreach (explode(',', $value->documents->documents) as $li) {
+                        $temp_workorder_doc = explode('/', $li);
+                        $workorder_attachments .= '<li><a href="'. $li .'" target="_blank" class="attachment-index">'. end($temp_workorder_doc) .'</a></li>';
+                    }
+                    $nestedData['attachments'] = '<ul>'. $workorder_attachments .'</ul>';
+                }
+
+                $nestedData['work_order_note'] = $value->work_order_note;
+                $nestedData['staff_note'] = $value->staff_note;
+                $nestedData['sales_reference_no'] = $value->sales_reference_no;
+                $nestedData['priority'] = $value->priority;
+                $nestedData['send_to'] = $value->send_to;
+
+                // actions
+                $action_btn = '<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>';
+
+                $action_dropdown_view = '<li>
+                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i> '. trans('file.View') .'</button>
+                    </li>';
+                $action_dropdown_edit = '<li>
+                        <a class="btn btn-link" href="'. route('workorder.edit', $value->id) .'">
+                        <i class="dripicons-document-edit"></i> '.trans('file.edit') .'</a></button>
+                    </li>';
+                $action_dropdown_create_sale = '<li>
+                        <a class="btn btn-link" href="'. route('quotation.create_sale', ['id' => $value->id]) .'"><i class="fa fa-shopping-cart"></i> '. trans('file.Create Sale') .'</a></button>
+                    </li>';
+                $action_dropdown_create_purchase = '<li>
+                        <a class="btn btn-link" href="'. route('quotation.create_purchase', ['id' => $value->id]) .'"><i class="fa fa-shopping-basket"></i> '. trans('file.Create Purchase') .'</a></button>
+                    </li>';
+                $action_dropdown_destroy = \Form::open(['route' => ['workorder.destroy', $value->id], 'method' => 'DELETE'] );
+                $action_dropdown_destroy .= '<li><button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> ';
+                $action_dropdown_destroy .= trans('file.delete');
+                $action_dropdown_destroy .= '</button></li>';
+                $action_dropdown_destroy .= \Form::close();
+
+                $action_dropdowns = `<ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                    $action_dropdown_view
+                    $action_dropdown_edit
+                    $action_dropdown_create_sale
+                    $action_dropdown_create_purchase
+                    <li class="divider"></li>
+                    $action_dropdown_destroy
+                </ul>`;
+
+                $action_dropdowns = '<ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
+                $action_dropdowns .= $action_dropdown_view;
+                $action_dropdowns .= $action_dropdown_edit;
+                $action_dropdowns .= $action_dropdown_create_sale;
+                $action_dropdowns .= $action_dropdown_create_purchase;
+                $action_dropdowns .= '<li class="divider"></li>';
+                $action_dropdowns .= $action_dropdown_destroy;
+                $action_dropdowns .= '</ul>';
+
+                $action_btn .= $action_dropdowns;
+
+                $nestedData['actions'] = '<div class="btn-group">'. $action_btn . '</div>';
+
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+
+        echo json_encode($json_data);
     }
 
     public function create()

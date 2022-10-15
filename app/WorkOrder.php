@@ -58,8 +58,11 @@ class WorkOrder extends Model
     public function getOrderTypeTagsAttribute() {
         $data = [];
         foreach($this->products as $product) {
-            if(!in_array($product->ordertype->order_type, $data))
-                $data[] = $product->ordertype->order_type;
+            if($product->ordertype ?? false) {
+                if(!in_array($product->ordertype->order_type, $data)) {
+                    $data[] = $product->ordertype->order_type;
+                }
+            }
         }
 
         return implode(', ', $data);

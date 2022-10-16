@@ -73,42 +73,11 @@ class WorkOrderController extends Controller
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
 
-            if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own'){
-                $lims_work_order_all = WorkOrder::with('warehouse', 'customer', 'documents', 'products')
-                    ->whereDate('created_at', '>=', $starting_date)
-                    ->whereDate('created_at', '<=', $ending_date)
-                    ->orderBy('id', 'desc')
-                    ->get();
-            } else {
-                $lims_work_order_all = WorkOrder::with('warehouse', 'customer', 'documents', 'products')
-                    ->whereDate('created_at', '>=', $starting_date)
-                    ->whereDate('created_at', '<=', $ending_date)
-                    ->when($warehouse_id != null, function ($q) use ($warehouse_id) {
-                        return $q->where('warehouse_id', $warehouse_id);
-                    })
-                    ->when($customer_id != null, function ($q) use ($customer_id) {
-                        return $q->whereIn('customer_id', $customer_id);
-                    })
-                    ->when($reference_no != null, function ($q) use ($reference_no) {
-                        return $q->where('reference_no', 'LIKE', "%{$reference_no}%");
-                    })
-                    ->when($priority != null, function ($q) use ($priority) {
-                        return $q->where('priority', '=', $priority);
-                    })
-                    ->when($order_type != null, function ($q) use ($order_type) {
-                        return $q->whereHas('products', function($query) use ($order_type) {
-                            return $query->whereIn('order_type', $order_type);
-                        });
-                    })
-                    ->orderBy('id', 'desc')
-                    ->get();
-            }
-
             $lims_ordertype_list = Ordertype::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_account_list = Account::where('is_active', true)->get();
             $lims_customer_list = Customer::all();
-            return view('work_order.index', compact( 'lims_account_list', 'lims_warehouse_list', 'lims_customer_list', 'all_permission', 'lims_work_order_all', 'warehouse_id', 'starting_date', 'ending_date', 'customer_id', 'lims_ordertype_list', 'order_type'));
+            return view('work_order.index', compact( 'lims_account_list', 'lims_warehouse_list', 'lims_customer_list', 'all_permission', 'warehouse_id', 'starting_date', 'ending_date', 'customer_id', 'lims_ordertype_list', 'order_type'));
         }
 
         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');    
@@ -117,11 +86,42 @@ class WorkOrderController extends Controller
     public function workOrderData(Request $request)
     {
         $columns = array(
-            1 => 'created_at',
+            1 => 'id',
             2 => 'reference_no',
             3 => 'created_at',
+            4 => 'work_order_status',
+            13 => 'work_order_note',
+            14 => 'staff_note',
+            15 => 'sales_reference_no',
+            16 => 'priority',
+            17 => 'send_to',
         );
-        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products')->orderBy('id', 'desc');
+
+        if($request->input('warehouse_id')) $warehouse_id = $request->input('warehouse_id');
+        else $warehouse_id = null;
+
+        if($request->input('customer_id')) $customer_id = $request->input('customer_id');
+        else $customer_id = null;
+
+        if($request->input('order_type')) $order_type = $request->input('order_type');
+        else $order_type = null;
+
+        if($request->input('reference_no')) $reference_no = $request->input('reference_no');
+        else $reference_no = null;
+
+        if($request->input('starting_date')) {
+            $starting_date = $request->input('starting_date');
+            $ending_date = $request->input('ending_date');
+        }
+        else {
+            $starting_date = date("Y-m-d", strtotime(date('Y-m-d', strtotime('-1 year', strtotime(date('Y-m-d') )))));
+            $ending_date = date("Y-m-d");
+        }
+
+        if($request->input('priority')) $priority = $request->input('priority');
+        else $priority = null;
+
+        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products');
         
         $totalData = $lims_work_order->count();
 
@@ -135,6 +135,25 @@ class WorkOrderController extends Controller
         $dir = $request->input('order.0.dir');
         $search = $request->input('search.value');
         $lims_work_order_all = $lims_work_order
+            ->whereDate('created_at', '>=', $starting_date)
+            ->whereDate('created_at', '<=', $ending_date)
+            ->when($warehouse_id != null, function ($q) use ($warehouse_id) {
+                return $q->where('warehouse_id', $warehouse_id);
+            })
+            ->when($customer_id != null, function ($q) use ($customer_id) {
+                return $q->whereIn('customer_id', $customer_id);
+            })
+            ->when($reference_no != null, function ($q) use ($reference_no) {
+                return $q->where('reference_no', 'LIKE', "%{$reference_no}%");
+            })
+            ->when($priority != null, function ($q) use ($priority) {
+                return $q->where('priority', '=', $priority);
+            })
+            ->when($order_type != null, function ($q) use ($order_type) {
+                return $q->whereHas('products', function($query) use ($order_type) {
+                    return $query->whereIn('order_type', $order_type);
+                });
+            })
             ->when(!empty($search), function ($query) use ($search) {
                 return $query->where('reference_no', 'LIKE', "%{$search}%");
             })
@@ -142,15 +161,6 @@ class WorkOrderController extends Controller
             ->limit($limit)
             ->orderBy($order, $dir)
             ->get();
-
-        $totalFiltered = $lims_work_order
-            ->when(!empty($search), function ($query) use ($search) {
-                return $query->where('reference_no', 'LIKE', "%{$search}%");
-            })
-            ->offset($start)
-            ->limit($limit)
-            ->orderBy($order, $dir)
-            ->count();
 
         $data = [];
         if(!empty($lims_work_order_all)) {
@@ -181,11 +191,15 @@ class WorkOrderController extends Controller
                 if($value->documents ?? false) {
                     $temp_file_preview = explode(',', $value->documents->documents)[0];
                     $nestedData['file_preview'] = '<embed src="'. $temp_file_preview .'" type="" height="80" width="80" class="product_image">';
+                } else {
+                    $nestedData['file_preview'] = '';
                 }
 
                 // types
                 if($value->order_type_tags ?? false) {
                     $nestedData['types'] = $value->order_type_tags;
+                } else{
+                    $nestedData['types'] = '';
                 }
 
                 // customer name
@@ -224,6 +238,8 @@ class WorkOrderController extends Controller
                         $workorder_attachments .= '<li><a href="'. $li .'" target="_blank" class="attachment-index">'. end($temp_workorder_doc) .'</a></li>';
                     }
                     $nestedData['attachments'] = '<ul>'. $workorder_attachments .'</ul>';
+                } else {
+                    $nestedData['attachments'] = '';
                 }
 
                 $nestedData['work_order_note'] = $value->work_order_note;
@@ -253,15 +269,6 @@ class WorkOrderController extends Controller
                 $action_dropdown_destroy .= trans('file.delete');
                 $action_dropdown_destroy .= '</button></li>';
                 $action_dropdown_destroy .= \Form::close();
-
-                $action_dropdowns = `<ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                    $action_dropdown_view
-                    $action_dropdown_edit
-                    $action_dropdown_create_sale
-                    $action_dropdown_create_purchase
-                    <li class="divider"></li>
-                    $action_dropdown_destroy
-                </ul>`;
 
                 $action_dropdowns = '<ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
                 $action_dropdowns .= $action_dropdown_view;

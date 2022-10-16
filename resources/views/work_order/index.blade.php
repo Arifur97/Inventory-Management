@@ -1,9 +1,18 @@
-@extends('layout.main') @section('content')
-@if(session()->has('message'))
-  <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{!! session()->get('message') !!}</div>
+@extends('layout.main') 
+@section('content')
+@if (session()->has('message'))
+    <div class="alert alert-success alert-dismissible text-center">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>{!! session()->get('message') !!}
+    </div>
 @endif
-@if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
+@if (session()->has('not_permitted'))
+    <div class="alert alert-danger alert-dismissible text-center">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>{{ session()->get('not_permitted') }}
+    </div>
 @endif
 
 <section>
@@ -334,6 +343,14 @@
     var workorder_id = [];
     var user_verified = <?php echo json_encode(env('USER_VERIFIED')) ?>;
 
+    let starting_date = $("input[name=starting_date]").val();
+    let ending_date = $("input[name=ending_date]").val();
+    let warehouse_id = $("#warehouse_id").val();
+    let customer_id = $("#customer_id").val();
+    let reference_no = $("#reference_no").val();
+    let order_type = $("select[name=order_type]").val();
+    let priority = $("select[name=priority]").val();
+
     window.addEventListener('keydown', function (event) {
         if (event.shiftKey && event.code === 'KeyA') {
             window.location.href = '/workorder/create';
@@ -373,7 +390,7 @@
     });
 
     $('#wrokOrder-table').DataTable( {
-        "responsive": true,
+        "responsive": false,
         "fixedHeader": true,
         "processing": true,
         "serverSide": true,
@@ -381,13 +398,23 @@
             url:"/workorder/json/data",
             data:{
                 all_permission: all_permission,
+                starting_date: starting_date,
+                ending_date: ending_date,
+                warehouse_id: warehouse_id,
+                customer_id: customer_id,
+                reference_no: reference_no,
+                order_type: order_type,
+                priority: priority,
             },
             dataType: "json",
             type:"post"
         },
         "createdRow": function( row, data, dataIndex ) {
+            $(row).attr('title', data['id']);
             if(data['work_order_status'] == 2 && data['priority'] == "Urgent") {
                 $(row).attr('style', 'color: crimson');
+            } else if(data['work_order_status'] == 0) {
+                $(row).attr('style', 'color: black; font-style: italic');
             } else {
                 $(row).attr('style', 'color: black');
             }
@@ -398,20 +425,20 @@
             {"data": "reference_no"},
             {"data": "date"},
             {"data": "status"},
-            {"data": "warehouse_id"},
-            {"data": "file_preview"},
-            {"data": "types"},
-            {"data": "customer_name"},
-            {"data": "customer_email"},
-            {"data": "customer_phone"},
-            {"data": "user_id"},
-            {"data": "attachments"},
+            {"data": "warehouse_id", "orderable": false},
+            {"data": "file_preview", "orderable": false},
+            {"data": "types", "orderable": false},
+            {"data": "customer_name", "orderable": false},
+            {"data": "customer_email", "orderable": false},
+            {"data": "customer_phone", "orderable": false},
+            {"data": "user_id", "orderable": false},
+            {"data": "attachments", "orderable": false},
             {"data": "work_order_note"},
             {"data": "staff_note"},
             {"data": "sales_reference_no"},
             {"data": "priority"},
             {"data": "send_to"},
-            {"data": "actions"},
+            {"data": "actions", "orderable": false},
         ],
         'language': {
             'lengthMenu': '_MENU_ ',
@@ -496,31 +523,24 @@
                 text: '<i class="fa fa-trash mr-1" aria-hidden="true"></i> {{trans("file.delete")}}',
                 className: 'buttons-delete',
                 action: function ( e, dt, node, config ) {
-                    if(user_verified == '1') {
-                        workorder_id.length = 0;
-                        $(':checkbox:checked').each(function(i){
-                            if(i){
-                                workorder_id[i-1] = $(this).closest('tr').data('id');
+                    workorder_id.length = 0;
+                    $(':checkbox:checked').each(function(i){
+                        workorder_id[i] = $(this).closest('tr')[0].title;
+                    });
+                    if(workorder_id.length && confirm("Are you sure want to delete?")) {
+                        $.ajax({
+                            type:'POST',
+                            url:'/workorder/deletebyselection',
+                            data:{
+                                workorderIdArray: workorder_id
+                            },
+                            success:function(data){
+                                $('#wrokOrder-table').DataTable().ajax.reload();
                             }
                         });
-                        if(workorder_id.length && confirm("Are you sure want to delete?")) {
-                            $.ajax({
-                                type:'POST',
-                                url:'workorder/deletebyselection',
-                                data:{
-                                    workorderIdArray: workorder_id
-                                },
-                                success:function(data){
-                                    alert(data);
-                                }
-                            });
-                            dt.rows({ page: 'current', selected: true }).remove().draw(false);
-                        }
-                        else if(!workorder_id.length)
-                            alert('Nothing is selected!');
+                    } else if(!workorder_id.length) {
+                        alert('Nothing is selected!');
                     }
-                    else
-                        alert('This feature is disable for demo!');
                 }
             },
             {
@@ -540,19 +560,19 @@
     $('#wrokOrder-table tbody').on('click', 'tr', function(e) {
         let checkbox = $(this).find('td:first :checkbox').trigger('click');
         setTimeout(() => {
-            const id = this.getElementsByClassName('id')[0].innerText;
+            const id = this.title;
             if (checkbox[0].checked === true) {
-                this.getElementsByClassName('id')[0].classList.add("selectedId");
+                this.classList.add("selectedId");
                 workOrderDataId.push(id);
             } else {
-                this.getElementsByClassName('id')[0].classList.remove("selectedId");
+                this.classList.remove("selectedId");
                 workOrderDataId = workOrderDataId.filter(e => e !== id)
             }
         }, 500);
     });
 
     function submitWorkOrderSendTo() {
-        let ids = workOrderDataId;
+        let ids = [...new Set(workOrderDataId)];
         const selectSendTo = document.getElementById('workorder__sendto').value;
 
         if(selectSendTo) {
@@ -577,7 +597,7 @@
     }
 
     function submitWorkOrderStatus() {
-        let ids = workOrderDataId;
+        let ids = [...new Set(workOrderDataId)];
         const selectStatus = document.getElementById('workorder__status').value;
 
         if(selectStatus) {

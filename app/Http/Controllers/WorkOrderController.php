@@ -85,11 +85,17 @@ class WorkOrderController extends Controller
 
     public function workOrderData(Request $request)
     {
+        // this array are using for sorting datatable
         $columns = array(
             1 => 'id',
             2 => 'reference_no',
             3 => 'created_at',
             4 => 'work_order_status',
+            5 => 'warehouse',
+            8 => 'customer_name',
+            9 => 'customer_email',
+            10 => 'customer_phone',
+            11 => 'user',
             13 => 'work_order_note',
             14 => 'staff_note',
             15 => 'sales_reference_no',
@@ -121,7 +127,7 @@ class WorkOrderController extends Controller
         if($request->input('priority')) $priority = $request->input('priority');
         else $priority = null;
 
-        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products');
+        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user');
         
         $totalData = $lims_work_order->count();
 
@@ -155,11 +161,76 @@ class WorkOrderController extends Controller
                 });
             })
             ->when(!empty($search), function ($query) use ($search) {
-                return $query->where('reference_no', 'LIKE', "%{$search}%");
+                return $query->whereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%")
+                            ->orwhere('email', 'LIKE', "%{$search}%")
+                            ->orwhere('phone_number', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('user', function($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('warehouse', function($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orwhere('id', 'LIKE', "%{$search}%")
+                    ->orwhere('reference_no', 'LIKE', "%{$search}%")
+                    ->orwhere('created_at', 'LIKE', "%{$search}%")
+                    ->orwhere('work_order_note', 'LIKE', "%{$search}%")
+                    ->orwhere('staff_note', 'LIKE', "%{$search}%")
+                    ->orwhere('sales_reference_no', 'LIKE', "%{$search}%")
+                    ->orwhere('priority', 'LIKE', "%{$search}%")
+                    ->orwhere('send_to', 'LIKE', "%{$search}%");
             })
             ->offset($start)
             ->limit($limit)
-            ->orderBy($order, $dir)
+            ->when($order != null, function ($query) use ($order, $dir) {
+                switch ($order) {
+                    case 'customer_name':
+                        return $query->orderBy(
+                            Customer::select('name')
+                                ->whereColumn('customer_id', 'customers.id')
+                                ->orderBy('name'),
+                            $dir
+                        );
+                        break;
+                    case 'customer_email':
+                        return $query->orderBy(
+                            Customer::select('name')
+                                ->whereColumn('customer_id', 'customers.id')
+                                ->orderBy('email'),
+                            $dir
+                        );
+                        break;
+                    case 'customer_phone':
+                        return $query->orderBy(
+                            Customer::select('name')
+                                ->whereColumn('customer_id', 'customers.id')
+                                ->orderBy('phone_number'),
+                            $dir
+                        );
+                        break;
+                    case 'warehouse':
+                        return $query->orderBy(
+                            Warehouse::select('name')
+                                ->whereColumn('warehouse_id', 'warehouses.id')
+                                ->orderBy('name'),
+                            $dir
+                        );
+                        break;
+                    case 'user':
+                        return $query->orderBy(
+                            User::select('name')
+                                ->whereColumn('user_id', 'users.id')
+                                ->orderBy('name'),
+                            $dir
+                        );
+                        break;
+                    
+                    default:
+                        return $query->orderBy($order, $dir);
+                        break;
+                }
+            })
             ->get();
 
         $data = [];

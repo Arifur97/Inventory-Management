@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Ordertype;
+use App\Product;
+use App\Color;
+use App\Size;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductWorkOrder extends Model
@@ -14,6 +17,18 @@ class ProductWorkOrder extends Model
 
     public function ordertype() {
         return $this->belongsTo(Ordertype::class, 'order_type');
+    }
+
+    public function product() {
+        return $this->belongsTo(Product::class, 'product_id')->with('category');
+    }
+
+    public function color() {
+        return $this->belongsTo(Color::class, 'color');
+    }
+
+    public function size() {
+        return $this->belongsTo(Size::class, 'size');
     }
 }
 

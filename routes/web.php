@@ -177,6 +177,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	// work order
 	Route::post('/workorder/json/data', 'WorkOrderController@workOrderData');
+	Route::post('workorder/sendmail', 'WorkOrderController@sendMail')->name('workorder.sendmail');
     Route::get('/workorder/redirectWithSuccess', 'WorkOrderController@redirectWithSuccess')->name('workOrder.redirectWithSuccess');
     Route::post('/workorder/storecustomer', 'WorkOrderController@storeCustomer')->name('workorder.storeCustomer');
     Route::post('/workorder/postWorkOrderSendTo', 'WorkOrderController@postWorkOrderSendTo')->name('workOrder.postWorkOrderSendTo');

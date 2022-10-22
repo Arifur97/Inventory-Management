@@ -127,7 +127,7 @@ class WorkOrderController extends Controller
         if($request->input('priority')) $priority = $request->input('priority');
         else $priority = null;
 
-        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user');
+        $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user', 'company');
         
         $totalData = $lims_work_order->count();
 
@@ -261,7 +261,7 @@ class WorkOrderController extends Controller
                 // file preview
                 if($value->documents ?? false) {
                     $temp_file_preview = explode(',', $value->documents->documents)[0];
-                    $nestedData['file_preview'] = '<embed src="'. $temp_file_preview .'" type="" height="80" width="80" class="product_image">';
+                    $nestedData['file_preview'] = '<embed src="'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
                 } else {
                     $nestedData['file_preview'] = '';
                 }
@@ -309,8 +309,40 @@ class WorkOrderController extends Controller
                         $workorder_attachments .= '<li><a href="'. $li .'" target="_blank" class="attachment-index">'. end($temp_workorder_doc) .'</a></li>';
                     }
                     $nestedData['attachments'] = '<ul>'. $workorder_attachments .'</ul>';
+                    $nestedData['workorder_attachments'] = $value->documents->documents;
                 } else {
                     $nestedData['attachments'] = '';
+                    $nestedData['workorder_attachments'] = '';
+                }
+
+                if($value->company ?? false) {
+                    $nestedData['company'] = $value->company->name;
+                } else {
+                    $nestedData['company'] = '';
+                }
+
+                if($value->user ?? false) {
+                    $nestedData['employee'] = $value->user->name;
+                } else {
+                    $nestedData['employee'] = '';
+                }
+
+                if($value->stage ?? false) {
+                    $nestedData['stage'] = $value->stage;
+                } else {
+                    $nestedData['stage'] = '';
+                }
+
+                if($value->expected_date ?? false) {
+                    $nestedData['expected_date'] = $value->expected_date;
+                } else {
+                    $nestedData['expected_date'] = '';
+                }
+
+                if($value->delivery_location_id ?? false) {
+                    $nestedData['delivery_location'] = Warehouse::findorfail($value->delivery_location_id)->name ?? '';
+                } else {
+                    $nestedData['delivery_location'] = '';
                 }
 
                 $nestedData['work_order_note'] = $value->work_order_note;
@@ -353,6 +385,8 @@ class WorkOrderController extends Controller
                 $action_btn .= $action_dropdowns;
 
                 $nestedData['actions'] = '<div class="btn-group">'. $action_btn . '</div>';
+
+                $nestedData['products'] = ProductWorkOrder::with('product', 'ordertype', 'color', 'size')->where('work_order_id', $value->id)->get();
 
 
                 $data[] = $nestedData;
@@ -831,6 +865,55 @@ class WorkOrderController extends Controller
 
     public function redirectWithSuccess() {
         $message = 'Work Order updated successfully';
+        return redirect()->back()->with('message', $message);
+    }
+
+    public function sendMail(Request $request)
+    {
+        $data = $request->all();
+        $lims_workorder_data = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user', 'company')
+            ->find($data['workorder_id']);
+        $lims_product_workorder_data = $lims_workorder_data->products ?? [];
+        $lims_customer_data = Customer::find($lims_workorder_data->customer_id);
+        if($lims_customer_data->email) {
+            //collecting mail data
+            $mail_data['email'] = $lims_customer_data->email;
+            $mail_data['reference_no'] = $lims_workorder_data->reference_no;
+
+            foreach ($lims_product_workorder_data as $key => $product_workorder_data) {
+                $lims_product_data = Product::find($product_workorder_data->product_id);
+                if($product_workorder_data->variant_id) {
+                    $variant_data = Variant::find($product_workorder_data->variant_id);
+                    $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name . ']';
+                }
+                else
+                    $mail_data['products'][$key] = $lims_product_data->name;
+                if($product_workorder_data->sale_unit_id){
+                    $lims_unit_data = Unit::find($product_workorder_data->sale_unit_id);
+                    $mail_data['unit'][$key] = $lims_unit_data->unit_code;
+                }
+                else
+                    $mail_data['unit'][$key] = '';
+
+                $mail_data['qty'][$key] = $product_workorder_data->qty;
+                // $mail_data['total'][$key] = $product_workorder_data->total;
+            }
+
+
+            try{
+                Mail::send( 'mail.quotation_details', $mail_data, function( $message ) use ($mail_data)
+                {
+                    $message->to( $mail_data['email'] )->subject( 'Quotation Details' );
+                });
+                $message = 'Mail sent successfully';
+            }
+            catch(\Exception $e){
+                $message = 'Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
+            }
+        }
+        else
+            $message = 'Customer doesnt have email!';
+
         return redirect()->back()->with('message', $message);
     }
 

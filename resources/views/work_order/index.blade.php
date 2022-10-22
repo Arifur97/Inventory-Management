@@ -136,56 +136,61 @@
 
 <div id="workOrder-details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
-      <div class="modal-content">
-        <div class="container mt-3 pb-2 border-bottom">
-            {{--  Infinity ERP work  --}}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-9 float-left">
-                        <button id="print-btn" type="button" class="btn btn-default btn-sm d-print-none"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
-                    {{ Form::open(['route' => 'quotation.sendmail', 'method' => 'post', 'class' => 'sendmail-form'] ) }}
-                        <input type="hidden" name="workorder_id">
-                        <button class="btn btn-default btn-sm d-print-none"><i class="dripicons-mail"></i> {{trans('file.Email')}}</button>
-                    {{ Form::close() }}
+        <div class="modal-content">
+            <div class="container mt-3 pb-2 border-bottom">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button id="print-btn" type="button" class="btn btn-default btn-sm d-print-none" onclick="printWorkorder()"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
+
+                        {{ Form::open(['route' => 'workorder.sendmail', 'method' => 'post', 'class' => 'sendmail-form'] ) }}
+                            <input type="hidden" name="workorder_id" id="workorder-details-workorderid">
+                            <button class="btn btn-default btn-sm d-print-none"><i class="dripicons-mail"></i> {{trans('file.Email')}}</button>
+                        {{ Form::close() }}
                     </div>
-                    <div class="col-md-3 float-left">
+                    <div class="col-md-6">
+                        <h3 id="exampleModalLabel" class="modal-title text-center container-fluid">{{$general_setting->site_title}}</h3>
+                    </div>
+                    <div class="col-md-3">
                         <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close d-print-none"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="col-md-7 float-left">
-                        <h3 id="exampleModalLabel" class="modal-title container-fluid">
-                            <img style="width: 50%" src="{{asset('public/images/CompanyLogoHeaderTemplate.png') }}">
-                        </h3>
-                    </div>
-
-                    <div class="col-md-5 float-left text-right">
-                        <span class="mt-3" style="font-size: 28px;font-weight:bold; text-transform: uppercase">{{trans('file.Quotation Details')}}</span>
+                    <div class="col-md-12 text-center">
+                        <i style="font-size: 15px;">{{trans('file.Quotation Details')}}</i>
                     </div>
                 </div>
             </div>
-        </div>
             <div id="quotation-content" class="modal-body">
             </div>
             <br>
-            <table class="table table-bordered product-workOrder-list">
+            <table class="table table-bordered product-workorder-list">
                 <thead class="dark-blue"style="color: white!important;text-align:center;">
-                    <th style="color:  white!important;">#</th>
-                    <th style="color:  white!important;">{{trans('file.product')}}</th>
-                    <th style="color:  white!important;">Qty</th>
-                    <th style="color:  white!important;">{{trans('file.Unit Price')}}</th>
-                    {{-- <th style="color:  white!important;">{{trans('file.Tax')}}</th> --}}
-                    {{-- <th style="color:  white!important;">{{trans('file.Discount')}}</th> --}}
-                    <th style="color:  white!important;">{{trans('file.Subtotal')}}</th>
+                    <th>{{trans('file.Image')}}</th>
+                    <th>{{trans('file.name')}}</th>
+                    <th>{{trans('file.Code')}}</th>
+                    <th>{{trans('file.Category')}}</th>
+                    <th>{{trans('file.Order Type')}}</th>
+                    <th>{{trans('file.Color')}}</th>
+                    <th>{{trans('file.Size')}}</th>
+                    <th>{{trans('file.Quantity')}}</th>
+                    <th>{{trans('file.Note')}}</th>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
             <div id="quotation-footer" class="modal-body"></div>
       </div>
+    </div>
+</div>
+
+<div id="workorder-img-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
+    <div role="document" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close d-print-none"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <embed id="workorder-embed-data" src="" type="" style="width: 100%; height: auto;">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -370,9 +375,14 @@
         return false;
     }
 
-    $("tr.workOrder-linkquotation-link td:not(:first-child, :last-child)").on("click", function(){
-        var workOrder = $(this).parent().data('workOrder');
-        workOrderDetails(workOrder);
+    $(document).on("click", "tr.workorder-link td:not(:first-child, :last-child)", function(e) {
+        if(e.target.title == 'workorder-embed') {
+            $('#workorder-embed-data').attr('src', e.target.src) ;
+            $('#workorder-img-modal').modal('show');
+        } else {
+            let workorder = $(this).parent().data('workorder');
+            workOrderDetails(workorder);
+        }
     });
 
     $(".view").on("click", function(){
@@ -380,14 +390,14 @@
         workOrderDetails(workOrder);
     });
 
-    $("#print-btn").on("click", function(){
-          var divToPrint=document.getElementById('workOrder-details');
-          var newWin=window.open('','Print-Window');
-          newWin.document.open();
-          newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
-          newWin.document.close();
-          setTimeout(function(){newWin.close();},10);
-    });
+    function printWorkorder() {
+        let divToPrint=document.getElementById('workOrder-details');
+        let newWin=window.open('','Print-Window');
+        newWin.document.open();
+        newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+        newWin.document.close();
+        // setTimeout(() => newWin.close(), 10);
+    }
 
     $('#wrokOrder-table').DataTable( {
         "responsive": false,
@@ -411,6 +421,8 @@
         },
         "createdRow": function( row, data, dataIndex ) {
             $(row).attr('title', data['id']);
+            $(row).addClass('workorder-link');
+            $(row).attr('data-workorder', JSON.stringify(data));
             if(data['work_order_status'] == 2 && data['priority'] == "Urgent") {
                 $(row).attr('style', 'color: crimson');
             } else if(data['work_order_status'] == 0) {
@@ -635,78 +647,66 @@
     if(all_permission.indexOf("quotes-delete") == -1)
         $('.buttons-delete').addClass('d-none');
 
-    function workOrderDetails(workOrder){
-        $('input[name="work_order_id"]').val(workOrder[13]);
 
-        var htmltext = '<div class="row"><div class="col-md-6 light-blue-border"><div class="col-md-12 p-1 dark-blue"><strong class="pl-2 text-white">{{trans("file.To")}}:</strong></div><span class="ml-2">'+workOrder[9]+'<br>'+workOrder[10]+'<br>'+workOrder[11]+'<br>'+workOrder[12]+'<br></span></div><div class="col-md-6"><div class="light-blue-border"><strong class="dark-blue d-block p-1 pl-2 text-white">{{trans("file.Date")}}:</strong>'+workOrder[0]+'<br/></div><br/><div class="light-blue-border"><strong class="dark-blue d-block p-1 pl-2 text-white">{{trans("file.reference")}}: </strong>'+workOrder[1] +'</div></div></div>';
-        $.get('workorder/product_workOder/' + workOrder[13], function(data){
-            $(".product-workOrder-list tbody").remove();
-            var name_code = data[0];
-            var qty = data[1];
-            var unit_code = data[2];
-            var tax = data[3];
-            var tax_rate = data[4];
-            var discount = data[5];
-            var subtotal = data[6];
-            var newBody = $("<tbody>");
-            $.each(name_code, function(index){
-                var newRow = $("<tr>");
-                var cols = '';
-                cols += '<td style="text-align:center;"><strong>' + (index+1) + '</strong></td>';
-                cols += '<td>' + name_code[index] + '</td>';
-                cols += '<td style="text-align:center;">' + qty[index] + ' ' + unit_code[index] + '</td>';
-                cols += '<td style="text-align:right;">' + parseFloat(subtotal[index] / qty[index]).toFixed(2) + '</td>';
-                {{-- cols += '<td>' + tax[index] + '(' + tax_rate[index] + '%)' + '</td>'; --}}
-                {{-- cols += '<td>' + discount[index] + '</td>'; --}}
-                cols += '<td style="text-align:right;">' + subtotal[index] + '</td>';
-                newRow.append(cols);
-                newBody.append(newRow);
-            });
+    function workOrderDetails(workorder){
+        let col1 = `<strong>Date: </strong> ${workorder['date'] || ''}<br/>`;
+        col1 += `<strong>Reference: </strong> ${workorder['reference_no'] || ''}<br/>`;
+        col1 += `<strong>Location: </strong> ${workorder['warehouse_id'] || ''}<br/>`;
+        col1 += `<strong>Company: </strong> ${workorder['company'] || ''}<br/>`;
+        col1 += `<strong>Status: </strong> ${workorder['status'] || ''}<br/><br/>`;
 
-            var newRow = $("<tr>");
-            cols = '';
-            cols += '<td colspan=2><strong>{{trans("file.Total")}}:</strong></td>';
-            cols += '<td style="text-align:center;">' + workOrder[14] + '</td>';
-            cols += '<td style="text-align:right;">' + workOrder[15] + '</td>';
-            cols += '<td style="text-align:right;">' + workOrder[16] + '</td>';
-            newRow.append(cols);
-            newBody.append(newRow);
+        let col2 = `<strong>Sales Reference ID: </strong> ${workorder['sales_reference_no'] || ''}<br/>`;
+        col2 += `<strong>Send To: </strong> ${workorder['send_to'] || ''}<br/>`;
+        col2 += `<strong>Customer: </strong> ${workorder['customer_name'] || ''}<br/>`;
+        col2 += `<strong>Priority: </strong> ${workorder['priority'] || ''}<br/><br/>`;
 
-            var newRow = $("<tr>");
-            cols = '';
-            cols += '<td colspan=4><strong>{{trans("file.Order Tax")}}:</strong></td>';
-            cols += '<td style="text-align:right;">' + workOrder[17] + '(' + workOrder[18] + '%)' + '</td>';
-            newRow.append(cols);
-            newBody.append(newRow);
+        let col3 = `<strong>Delivery Location: </strong> ${workorder['delivery_location'] || ''}<br/>`;
+        col3 += `<strong>Expected Delivery Date: </strong> ${workorder['expected_date'] || ''}<br/>`;
+        col3 += `<strong>Stage: </strong> ${workorder['stage'] || ''}<br/>`;
+        col3 += `<strong>Employee: </strong> ${workorder['employee'] || ''}<br/><br/>`;
 
-            var newRow = $("<tr>");
-            cols = '';
-            cols += '<td colspan=4><strong>{{trans("file.Order Discount")}}:</strong></td>';
-            cols += '<td style="text-align:right;">' + workOrder[19] + '</td>';
-            newRow.append(cols);
-            newBody.append(newRow);
+        let html = `<div class="row">
+            <div class="col-md-4">${col1}</div>
+            <div class="col-md-4">${col2}</div>
+            <div class="col-md-4">${col3}</div>
+        </div>`;
 
-            var newRow = $("<tr>");
-            cols = '';
-            cols += '<td colspan=4><strong>{{trans("file.Shipping Cost")}}:</strong></td>';
-            cols += '<td style="text-align:right;">' + workOrder[20] + '</td>';
-            newRow.append(cols);
-            newBody.append(newRow);
+        html += '<div class="row"><div class="col-12">';
+        workorder['workorder_attachments']?.split(",").forEach(element => {
+            html += `<a href="${element}" target="_blank"><embed src="${element}" class="product_image" width="80" height="80" ></a>`;
+        })
+        html += '</div></div>'
 
-            var newRow = $("<tr>");
-            cols = '';
-            cols += '<td colspan=4 style="font-weight:bold; font-size: 20px"><strong >{{trans("file.grand total")}}:</strong></td>';
-            cols += '<td style="font-weight:bold; font-size: 22px;text-align:right;">' + workOrder[21] + '</td>';
-            newRow.append(cols);
-            newBody.append(newRow);
-
-            $("table.product-workOrder-list").append(newBody);
+        let table = '';
+        workorder['products']?.forEach(element => {
+            let td = `<td>
+                <img src="{{ asset('/images/product/${element.product.image}') }}" 
+                    alt="product image" class="product_image" 
+                    width="80"
+                    height="80" />
+            </td>`;
+            td += `<td>${element.product.name || ''}</td>`;
+            td += `<td>${element.product_code || ''}</td>`;
+            td += `<td>${element.product.category.name || ''}</td>`;
+            td += `<td>${element.ordertype.order_type || ''}</td>`;
+            td += `<td>${element.color.color || ''}</td>`;
+            td += `<td>${element.size.size || ''}</td>`;
+            td += `<td>${element.product.qty || ''}</td>`;
+            td += `<td>${element.product.note || ''}</td>`;
+            table += `<tr>${td}</tr>`;
         });
 
-        var htmlfooter = '<strong class="dark-blue d-block p-1 pl-2 text-white">{{trans("file.Note")}}: </strong>'+workOrder[22] +'<br/><br/><br/><br/>';
-        $('#quotation-content').html(htmltext);
-        $('#quotation-footer').html(htmlfooter);
+        $("table.product-workorder-list tbody").append(table);
+
+        let footer = `<p><strong>Work Order Note: </strong> ${workorder['work_order_note'] || ''}</p><br/>`;
+        footer += `<p><strong>Staff Note: </strong> ${workorder['staff_note'] || ''}</p><br/>`;
+        footer += `<strong>Created By: </strong> ${workorder['user_id'] || ''}`;
+
+        $('#workorder-details-workorderid').val(workorder.id)
+        $('#quotation-content').html(html);
+        $('#quotation-footer').html(footer);
         $('#workOrder-details').modal('show');
     }
+
 </script>
 @endsection

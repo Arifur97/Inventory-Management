@@ -40,11 +40,10 @@
                                 <input type="hidden" id="old_attachments" name="old_attachments" value="{{ $documents->documents ?? '' }}">
                                 <input type="hidden" id="old_remove_attachments" name="old_remove_attachments" value="">
                                 <?php
-                                if ($documents != null) {
+                                if ($documents->documents != null && $documents->documents != '') {
                                     $docs = explode(',', $documents->documents);
                                 }
                                 ?>
-
                                 @if ($docs ?? false)
                                     @foreach ($docs as $doc)
                                         @php
@@ -52,7 +51,7 @@
                                         @endphp
                                         <div class="row">
                                             <div class="col-md-2 float-left">
-                                                <img src="/{{ $doc }}" alt="Attachment" height="80" width="80" class="product_image" >
+                                                <embed src="/{{ $doc }}" alt="Attachment" height="80" width="80" class="product_image" >
                                             </div>
                                             <div class="col-md-8 float-left m-auto">
                                                 <a href="/{{ $doc }}" target="_blank" title="{{ $doc }}" class="document-text prev__doc-item">{{ end($tempDoc) }}</a>
@@ -94,7 +93,7 @@
         for (let i = 0; i < fileList.length; i++) {
             $('#selectedFile').append(
                 `<div class="col-md-2 float-left">
-                    <img src="${getFileLink(this, i)}" alt="Attachment" height="80" width="80" class="product_image" >
+                    <embed src="${getFileLink(this, i)}" alt="Attachment" height="80" width="80" class="product_image" >
                 </div>
                 <div class="col-md-8 float-left">
                     <a class="document-text" onclick="viewfile(this, ${i});">

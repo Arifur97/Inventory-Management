@@ -80,7 +80,7 @@ class WorkOrderController extends Controller
             return view('work_order.index', compact( 'lims_account_list', 'lims_warehouse_list', 'lims_customer_list', 'all_permission', 'warehouse_id', 'starting_date', 'ending_date', 'customer_id', 'lims_ordertype_list', 'order_type'));
         }
 
-        return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');    
+        return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
 
     public function workOrderData(Request $request)
@@ -88,19 +88,19 @@ class WorkOrderController extends Controller
         // this array are using for sorting datatable
         $columns = array(
             1 => 'id',
-            2 => 'reference_no',
-            3 => 'created_at',
-            4 => 'work_order_status',
-            5 => 'warehouse',
-            8 => 'customer_name',
-            9 => 'customer_email',
-            10 => 'customer_phone',
-            11 => 'user',
-            13 => 'work_order_note',
-            14 => 'staff_note',
-            15 => 'sales_reference_no',
-            16 => 'priority',
-            17 => 'send_to',
+            2 => 'created_at',
+            3 => 'work_order_status',
+            4 => 'warehouse',
+            7 => 'customer_name',
+            8 => 'customer_email',
+            9 => 'customer_phone',
+            10 => 'user',
+            11 => 'work_order_note',
+            12 => 'staff_note',
+            13 => 'sales_reference_no',
+            14 => 'priority',
+            15 => 'send_to',
+            16 => 'reference_no',
         );
 
         if($request->input('warehouse_id')) $warehouse_id = $request->input('warehouse_id');
@@ -128,7 +128,7 @@ class WorkOrderController extends Controller
         else $priority = null;
 
         $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user', 'company');
-        
+
         $totalData = $lims_work_order->count();
 
         $totalFiltered = $totalData;
@@ -225,7 +225,7 @@ class WorkOrderController extends Controller
                             $dir
                         );
                         break;
-                    
+
                     default:
                         return $query->orderBy($order, $dir);
                         break;
@@ -240,7 +240,7 @@ class WorkOrderController extends Controller
                 $nestedData['id'] = $value->id;
                 $nestedData['reference_no'] = $value->reference_no ?? '';
                 $nestedData['date'] = date(config('date_format'), strtotime($value->created_at->toDateString()));
-                
+
                 // work order status
                 $nestedData['work_order_status'] = $value->work_order_status;
                 if($value->work_order_status == 1) {
@@ -261,7 +261,7 @@ class WorkOrderController extends Controller
                 // file preview
                 if($value->documents ?? false) {
                     $temp_file_preview = explode(',', $value->documents->documents)[0];
-                    $nestedData['file_preview'] = '<embed src="'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
+                    $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
                 } else {
                     $nestedData['file_preview'] = '';
                 }
@@ -374,8 +374,8 @@ class WorkOrderController extends Controller
                 $action_dropdown_destroy .= \Form::close();
 
                 $action_dropdowns = '<ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
-                $action_dropdowns .= $action_dropdown_view;
                 $action_dropdowns .= $action_dropdown_edit;
+                $action_dropdowns .= $action_dropdown_view;
                 $action_dropdowns .= $action_dropdown_create_sale;
                 $action_dropdowns .= $action_dropdown_create_purchase;
                 $action_dropdowns .= '<li class="divider"></li>';

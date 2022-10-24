@@ -58,6 +58,22 @@ class Attachments extends Model
             $docPath = $companyData->name ?? $docPath;
         }
 
+        if(!$documents && !$oldDocs) {
+            $attach = self::where('id', '=', $id)->first();
+            if ($attach !== null) {
+                $attach->update([
+                    'documents' => '',
+                    'model' => $model,
+                ]);
+                return $attach;
+            } else {
+                return self::create([
+                    'documents' => '',
+                    'model' => $model,
+                ]);
+            }
+        }
+
         if($documents) {
             foreach ($documents as $document) {
                 if($filename && $filename != '') {
@@ -112,6 +128,7 @@ class Attachments extends Model
                     'documents' => $imagesStr,
                     'model' => $model,
                 ]);
+                return $docs;
             } else {
                 return self::create([
                     'documents' => $imagesStr,

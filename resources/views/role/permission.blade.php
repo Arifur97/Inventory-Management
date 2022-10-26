@@ -712,6 +712,312 @@
 						            	</div>
 						            </td>
 						        </tr>
+								<tr>
+						            <td>Work Order</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("workorder-index", $all_permission))
+								                <input type="checkbox" value="1" id="workorder-index" name="workorder-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="workorder-index" name="workorder-index">
+								                @endif
+								                <label for="workorder-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("workorder-add", $all_permission))
+								                <input type="checkbox" value="1" id="workorder-add" name="workorder-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="workorder-add" name="workorder-add">
+								                @endif
+								                <label for="workorder-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("workorder-edit", $all_permission))
+								                <input type="checkbox" value="1" id="workorder-edit" name="workorder-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="workorder-edit" name="workorder-edit">
+								                @endif
+								                <label for="workorder-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("workorder-delete", $all_permission))
+								                <input type="checkbox" value="1" id="workorder-delete" name="workorder-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="workorder-delete" name="workorder-delete">
+								                @endif
+								                <label for="workorder-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
+								<tr>
+						            <td>Documents</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("documents-index", $all_permission))
+								                <input type="checkbox" value="1" id="documents-index" name="documents-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="documents-index" name="documents-index">
+								                @endif
+								                <label for="documents-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("documents-add", $all_permission))
+								                <input type="checkbox" value="1" id="documents-add" name="documents-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="documents-add" name="documents-add">
+								                @endif
+								                <label for="documents-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("documents-edit", $all_permission))
+								                <input type="checkbox" value="1" id="documents-edit" name="documents-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="documents-edit" name="documents-edit">
+								                @endif
+								                <label for="documents-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("documents-delete", $all_permission))
+								                <input type="checkbox" value="1" id="documents-delete" name="documents-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="documents-delete" name="documents-delete">
+								                @endif
+								                <label for="documents-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
+								<tr>
+						            <td>Item Requirements</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("item-requirements-index", $all_permission))
+								                <input type="checkbox" value="1" id="item-requirements-index" name="item-requirements-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="item-requirements-index" name="item-requirements-index">
+								                @endif
+								                <label for="item-requirements-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("item-requirements-add", $all_permission))
+								                <input type="checkbox" value="1" id="item-requirements-add" name="item-requirements-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="item-requirements-add" name="item-requirements-add">
+								                @endif
+								                <label for="item-requirements-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("item-requirements-edit", $all_permission))
+								                <input type="checkbox" value="1" id="item-requirements-edit" name="item-requirements-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="item-requirements-edit" name="item-requirements-edit">
+								                @endif
+								                <label for="item-requirements-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("item-requirements-delete", $all_permission))
+								                <input type="checkbox" value="1" id="item-requirements-delete" name="item-requirements-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="item-requirements-delete" name="item-requirements-delete">
+								                @endif
+								                <label for="item-requirements-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
+								<tr>
+						            <td>Shelf Location</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("shelf-location-index", $all_permission))
+								                <input type="checkbox" value="1" id="shelf-location-index" name="shelf-location-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="shelf-location-index" name="shelf-location-index">
+								                @endif
+								                <label for="shelf-location-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("shelf-location-add", $all_permission))
+								                <input type="checkbox" value="1" id="shelf-location-add" name="shelf-location-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="shelf-location-add" name="shelf-location-add">
+								                @endif
+								                <label for="shelf-location-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("shelf-location-edit", $all_permission))
+								                <input type="checkbox" value="1" id="shelf-location-edit" name="shelf-location-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="shelf-location-edit" name="shelf-location-edit">
+								                @endif
+								                <label for="shelf-location-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("shelf-location-delete", $all_permission))
+								                <input type="checkbox" value="1" id="shelf-location-delete" name="shelf-location-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="shelf-location-delete" name="shelf-location-delete">
+								                @endif
+								                <label for="shelf-location-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
+								<tr>
+						            <td>Task List</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("task-list-index", $all_permission))
+								                <input type="checkbox" value="1" id="task-list-index" name="task-list-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="task-list-index" name="task-list-index">
+								                @endif
+								                <label for="task-list-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("task-list-add", $all_permission))
+								                <input type="checkbox" value="1" id="task-list-add" name="task-list-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="task-list-add" name="task-list-add">
+								                @endif
+								                <label for="task-list-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("task-list-edit", $all_permission))
+								                <input type="checkbox" value="1" id="task-list-edit" name="task-list-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="task-list-edit" name="task-list-edit">
+								                @endif
+								                <label for="task-list-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("task-list-delete", $all_permission))
+								                <input type="checkbox" value="1" id="task-list-delete" name="task-list-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="task-list-delete" name="task-list-delete">
+								                @endif
+								                <label for="task-list-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
+								<tr>
+						            <td>Support Ticket</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("support-ticket-index", $all_permission))
+								                <input type="checkbox" value="1" id="support-ticket-index" name="support-ticket-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="support-ticket-index" name="support-ticket-index">
+								                @endif
+								                <label for="support-ticket-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("support-ticket-add", $all_permission))
+								                <input type="checkbox" value="1" id="support-ticket-add" name="support-ticket-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="support-ticket-add" name="support-ticket-add">
+								                @endif
+								                <label for="support-ticket-add"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("support-ticket-edit", $all_permission))
+								                <input type="checkbox" value="1" id="support-ticket-edit" name="support-ticket-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="support-ticket-edit" name="support-ticket-edit">
+								                @endif
+								                <label for="support-ticket-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("support-ticket-delete", $all_permission))
+								                <input type="checkbox" value="1" id="support-ticket-delete" name="support-ticket-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="support-ticket-delete" name="support-ticket-delete">
+								                @endif
+								                <label for="support-ticket-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
 						        						        <tr>
 						            <td>{{trans('file.Accounting')}}</td>
 						            <td class="report-permissions" colspan="5">

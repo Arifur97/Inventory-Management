@@ -624,6 +624,227 @@ class RoleController extends Controller
         else
             $role->revokePermissionTo('suppliers-delete');
 
+        if($request->has('workorder-index')){
+            $permission = Permission::firstOrCreate(['name' => 'workorder-index']);
+            if(!$role->hasPermissionTo('workorder-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('workorder-index');
+
+        if($request->has('workorder-add')){
+            $permission = Permission::firstOrCreate(['name' => 'workorder-add']);
+            if(!$role->hasPermissionTo('workorder-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('workorder-add');
+
+        if($request->has('workorder-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'workorder-edit']);
+            if(!$role->hasPermissionTo('workorder-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('workorder-edit');
+
+        if($request->has('workorder-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'workorder-delete']);
+            if(!$role->hasPermissionTo('workorder-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('workorder-delete');
+
+        
+        if($request->has('documents-index')){
+            $permission = Permission::firstOrCreate(['name' => 'documents-index']);
+            if(!$role->hasPermissionTo('documents-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('documents-index');
+
+        if($request->has('documents-add')){
+            $permission = Permission::firstOrCreate(['name' => 'documents-add']);
+            if(!$role->hasPermissionTo('documents-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('documents-add');
+
+        if($request->has('documents-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'documents-edit']);
+            if(!$role->hasPermissionTo('documents-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('documents-edit');
+
+        if($request->has('documents-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'documents-delete']);
+            if(!$role->hasPermissionTo('documents-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('documents-delete');
+
+        
+        if($request->has('item-requirements-index')){
+            $permission = Permission::firstOrCreate(['name' => 'item-requirements-index']);
+            if(!$role->hasPermissionTo('item-requirements-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('item-requirements-index');
+
+        if($request->has('item-requirements-add')){
+            $permission = Permission::firstOrCreate(['name' => 'item-requirements-add']);
+            if(!$role->hasPermissionTo('item-requirements-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('item-requirements-add');
+
+        if($request->has('item-requirements-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'item-requirements-edit']);
+            if(!$role->hasPermissionTo('item-requirements-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('item-requirements-edit');
+
+        if($request->has('item-requirements-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'item-requirements-delete']);
+            if(!$role->hasPermissionTo('item-requirements-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('item-requirements-delete');
+
+        
+        if($request->has('shelf-location-index')){
+            $permission = Permission::firstOrCreate(['name' => 'shelf-location-index']);
+            if(!$role->hasPermissionTo('shelf-location-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('shelf-location-index');
+
+        if($request->has('shelf-location-add')){
+            $permission = Permission::firstOrCreate(['name' => 'shelf-location-add']);
+            if(!$role->hasPermissionTo('shelf-location-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('shelf-location-add');
+
+        if($request->has('shelf-location-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'shelf-location-edit']);
+            if(!$role->hasPermissionTo('shelf-location-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('shelf-location-edit');
+
+        if($request->has('shelf-location-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'shelf-location-delete']);
+            if(!$role->hasPermissionTo('shelf-location-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('shelf-location-delete');
+
+        
+        if($request->has('task-list-index')){
+            $permission = Permission::firstOrCreate(['name' => 'task-list-index']);
+            if(!$role->hasPermissionTo('task-list-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('task-list-index');
+
+        if($request->has('task-list-add')){
+            $permission = Permission::firstOrCreate(['name' => 'task-list-add']);
+            if(!$role->hasPermissionTo('task-list-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('task-list-add');
+
+        if($request->has('task-list-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'task-list-edit']);
+            if(!$role->hasPermissionTo('task-list-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('task-list-edit');
+
+        if($request->has('task-list-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'task-list-delete']);
+            if(!$role->hasPermissionTo('task-list-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('task-list-delete');
+
+        
+        if($request->has('support-ticket-index')){
+            $permission = Permission::firstOrCreate(['name' => 'support-ticket-index']);
+            if(!$role->hasPermissionTo('support-ticket-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('support-ticket-index');
+
+        if($request->has('support-ticket-add')){
+            $permission = Permission::firstOrCreate(['name' => 'support-ticket-add']);
+            if(!$role->hasPermissionTo('support-ticket-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('support-ticket-add');
+
+        if($request->has('support-ticket-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'support-ticket-edit']);
+            if(!$role->hasPermissionTo('support-ticket-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('support-ticket-edit');
+
+        if($request->has('support-ticket-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'support-ticket-delete']);
+            if(!$role->hasPermissionTo('support-ticket-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('support-ticket-delete');
+
         if($request->has('profit-loss')){
             $permission = Permission::firstOrCreate(['name' => 'profit-loss']);
             if(!$role->hasPermissionTo('profit-loss')){

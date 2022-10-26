@@ -1018,7 +1018,24 @@
 						            	</div>
 						            </td>
 						        </tr>
-						        						        <tr>
+								<tr>
+						            <td>Additional Fields</td>
+						            <td class="report-permissions" colspan="5">
+						            	<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("hide-workorder-customer-index", $all_permission))
+							                    	<input type="checkbox" value="1" id="hide-workorder-customer-index" name="hide-workorder-customer-index" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="hide-workorder-customer-index" name="hide-workorder-customer-index">
+							                    	@endif
+								                    <label for="hide-workorder-customer-index" class="padding05">Hide Work Order Customer</label>
+								                </div>
+								            </div>
+						                </span>
+						            </td>
+						        </tr>
+						        <tr>
 						            <td>{{trans('file.Accounting')}}</td>
 						            <td class="report-permissions" colspan="5">
 						            	<span>
@@ -1331,6 +1348,42 @@
 								                </div>
 								            </div>
 						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("stock-availability-report", $all_permission))
+							                    	<input type="checkbox" value="1" id="stock-availability-report" name="stock-availability-report" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="stock-availability-report" name="stock-availability-report">
+							                    	@endif
+								                    <label for="stock-availability-report" class="padding05">Stock Availability Report</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("all-suppliers-due-report", $all_permission))
+							                    	<input type="checkbox" value="1" id="all-suppliers-due-report" name="all-suppliers-due-report" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="all-suppliers-due-report" name="all-suppliers-due-report">
+							                    	@endif
+								                    <label for="all-suppliers-due-report" class="padding05">All Suppliers Due Report</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("all-customers-due-report", $all_permission))
+							                    	<input type="checkbox" value="1" id="all-customers-due-report" name="all-customers-due-report" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="all-customers-due-report" name="all-customers-due-report">
+							                    	@endif
+								                    <label for="all-customers-due-report" class="padding05">All Customers Due Report</label>
+								                </div>
+								            </div>
+						                </span>
 						            </td>
 						        </tr>
 						        <tr>
@@ -1513,6 +1566,78 @@
 							                    	<input type="checkbox" value="1" id="reward_point_setting" name="reward_point_setting">
 							                    	@endif
 								                    <label for="reward_point_setting" class="padding05">{{trans('file.Reward Point Setting')}} &nbsp;&nbsp;</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("color-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="color-settings" name="color-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="color-settings" name="color-settings">
+							                    	@endif
+								                    <label for="color-settings" class="padding05">Color</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("size-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="size-settings" name="size-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="size-settings" name="size-settings">
+							                    	@endif
+								                    <label for="size-settings" class="padding05">Size</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("company-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="company-settings" name="company-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="company-settings" name="company-settings">
+							                    	@endif
+								                    <label for="company-settings" class="padding05">Company Setting</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("holding-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="holding-settings" name="holding-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="holding-settings" name="holding-settings">
+							                    	@endif
+								                    <label for="holding-settings" class="padding05">Holding Setting</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("system-color-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="system-color-settings" name="system-color-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="system-color-settings" name="system-color-settings">
+							                    	@endif
+								                    <label for="system-color-settings" class="padding05">System Color</label>
+								                </div>
+								            </div>
+						                </span>
+										<span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("workflow-setup-settings", $all_permission))
+							                    	<input type="checkbox" value="1" id="workflow-setup-settings" name="workflow-setup-settings" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="workflow-setup-settings" name="workflow-setup-settings">
+							                    	@endif
+								                    <label for="workflow-setup-settings" class="padding05">Workflow Setup</label>
 								                </div>
 								            </div>
 						                </span>

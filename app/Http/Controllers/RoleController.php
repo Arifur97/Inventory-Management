@@ -845,6 +845,15 @@ class RoleController extends Controller
         else
             $role->revokePermissionTo('support-ticket-delete');
 
+        if($request->has('hide-workorder-customer-index')){
+            $permission = Permission::firstOrCreate(['name' => 'hide-workorder-customer-index']);
+            if(!$role->hasPermissionTo('hide-workorder-customer-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('hide-workorder-customer-index');
+
         if($request->has('profit-loss')){
             $permission = Permission::firstOrCreate(['name' => 'profit-loss']);
             if(!$role->hasPermissionTo('profit-loss')){
@@ -997,6 +1006,33 @@ class RoleController extends Controller
         }
         else
             $role->revokePermissionTo('due-report');
+
+        if($request->has('stock-availability-report')){
+            $permission = Permission::firstOrCreate(['name' => 'stock-availability-report']);
+            if(!$role->hasPermissionTo('stock-availability-report')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('stock-availability-report');
+
+        if($request->has('all-suppliers-due-report')){
+            $permission = Permission::firstOrCreate(['name' => 'all-suppliers-due-report']);
+            if(!$role->hasPermissionTo('all-suppliers-due-report')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('all-suppliers-due-report');
+
+        if($request->has('all-customers-due-report')){
+            $permission = Permission::firstOrCreate(['name' => 'all-customers-due-report']);
+            if(!$role->hasPermissionTo('all-customers-due-report')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('all-customers-due-report');
 
         if($request->has('backup_database')){
             $permission = Permission::firstOrCreate(['name' => 'backup_database']);
@@ -1231,6 +1267,61 @@ class RoleController extends Controller
         }
         else
             $role->revokePermissionTo('today_profit');
+
+
+        if($request->has('color-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'color-settings']);
+            if(!$role->hasPermissionTo('color-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('color-settings');
+
+        if($request->has('size-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'size-settings']);
+            if(!$role->hasPermissionTo('size-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('size-settings');
+
+        if($request->has('company-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'company-settings']);
+            if(!$role->hasPermissionTo('company-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('company-settings');
+
+        if($request->has('holding-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'holding-settings']);
+            if(!$role->hasPermissionTo('holding-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('holding-settings');
+
+        if($request->has('system-color-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'system-color-settings']);
+            if(!$role->hasPermissionTo('system-color-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('system-color-settings');
+
+        if($request->has('workflow-setup-settings')) {
+            $permission = Permission::firstOrCreate(['name' => 'workflow-setup-settings']);
+            if(!$role->hasPermissionTo('workflow-setup-settings')) {
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('workflow-setup-settings');
 
         return redirect('role')->with('message', 'Permission updated successfully');
     }

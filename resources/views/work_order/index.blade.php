@@ -72,13 +72,16 @@
                     <th class="not-exported" style="border-radius: 5px 0px 0px 5px"></th>
                     <th>{{trans('file.id')}}</th>
                     <th>{{trans('file.Date')}}</th>
-                    <th>{{trans('file.Status')}}</th>
-                    <th>{{trans('file.Warehouse')}}</th>
                     <th>{{trans('file.File Preview')}}</th>
+                    <th>{{trans('file.Warehouse')}}</th>
                     <th>{{trans('file.Types')}}</th>
-                    <th>{{trans('file.customer')}}</th>
-                    <th>{{trans('file.Email')}}</th>
-                    <th>{{trans('file.Phone Number')}}</th>
+
+                    @if(!in_array("hide-workorder-customer-index", $all_permission))
+                        <th>{{trans('file.customer')}}</th>
+                        <th>{{trans('file.Email')}}</th>
+                        <th>{{trans('file.Phone Number')}}</th>
+                    @endif
+
                     <th>{{trans('file.User')}}</th>
                     {{-- <th>{{trans('file.File Attached')}}</th> --}}
                     <th>{{trans('file.Note')}}</th>
@@ -87,6 +90,7 @@
                     <th>{{trans('file.Priority')}}</th>
                     <th>{{trans('file.Stage')}}</th>
                     <th>{{trans('file.Order No.')}}</th>
+                    <th>{{trans('file.Status')}}</th>
                     <th class="not-exported" style="border-radius: 0px 5px 5px 0px">{{trans('file.action')}}</th>
                 </tr>
             </thead>
@@ -107,13 +111,10 @@
                         {{ Form::close() }}
                     </div>
                     <div class="col-md-6">
-                        <h3 id="exampleModalLabel" class="modal-title text-center container-fluid">{{$general_setting->site_title}}</h3>
+                        <h3 id="exampleModalLabel" class="modal-title text-center container-fluid">{{trans('file.Work Order')}}</h3>
                     </div>
                     <div class="col-md-3">
                         <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close d-print-none"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
-                    </div>
-                    <div class="col-md-12 text-center">
-                        <p style="font-size: 15px;">{{trans('file.Work Order Details')}}</p>
                     </div>
                 </div>
             </div>
@@ -174,7 +175,7 @@
                 <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close d-print-none"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
             </div>
             <div class="modal-body">
-                <embed id="workorder-embed-data" src="" type="" style="width: 100%; height: auto;">
+                <embed id="workorder-embed-data" src="" type="" style="width: 100%; height: auto; min-height: 500px;">
             </div>
         </div>
     </div>
@@ -363,7 +364,7 @@
 
     $(document).on("click", "tr.workorder-link td:not(:first-child, :last-child)", function(e) {
         if(e.target.title == 'workorder-embed') {
-            $('#workorder-embed-data').attr('src', e.target.src) ;
+            $('#workorder-embed-data').attr('src', e.target.src || e.target.value) ;
             $('#workorder-img-modal').modal('show');
         } else {
             let workorder = $(this).parent().data('workorder');
@@ -421,13 +422,16 @@
             {"data": "key"},
             {"data": "id"},
             {"data": "date"},
-            {"data": "status"},
-            {"data": "warehouse_id"},
             {"data": "file_preview", "orderable": false},
+            {"data": "warehouse_id"},
             {"data": "types", "orderable": false},
+
+            @if(!in_array("hide-workorder-customer-index", $all_permission))
             {"data": "customer_name"},
             {"data": "customer_email"},
             {"data": "customer_phone"},
+            @endif
+
             {"data": "user_id"},
             // {"data": "attachments", "orderable": false},
             {"data": "work_order_note"},
@@ -436,6 +440,7 @@
             {"data": "priority"},
             {"data": "send_to"},
             {"data": "reference_no"},
+            {"data": "status"},
             {"data": "actions", "orderable": false},
         ],
         'language': {
@@ -451,7 +456,7 @@
         'columnDefs': [
             {
                 "orderable": false,
-                'targets': [0, 17]
+                'targets': [0]
             },
             {
                 'render': function(data, type, row, meta){
@@ -633,17 +638,21 @@
 
 
     function workOrderDetails(workorder){
-        let col1 = `<strong>Date: </strong> ${workorder['date'] || ''}<br/>`;
+        let col1 = `<strong>ID: </strong> ${workorder['id'] || ''}<br/>`;
+        col1 += `<strong>Date: </strong> ${workorder['date'] || ''}<br/>`;
         col1 += `<strong>Order No: </strong> ${workorder['reference_no'] || ''}<br/>`;
         col1 += `<strong>Location: </strong> ${workorder['warehouse_id'] || ''}<br/>`;
-        // col1 += `<strong>Company: </strong> ${workorder['company'] || ''}<br/>`;
+        col1 += `<strong>Company: </strong> ${workorder['company'] || ''}<br/>`;
         col1 += `<strong>Status: </strong> ${workorder['status'] || ''}<br/><br/>`;
 
         let col2 = `<strong>Sales Reference ID: </strong> ${workorder['sales_reference_no'] || ''}<br/>`;
         col2 += `<strong>Send To: </strong> ${workorder['send_to'] || ''}<br/>`;
+
+        @if(!in_array("hide-workorder-customer-index", $all_permission))
         col2 += `<strong>Customer: </strong> ${workorder['customer_name'] || ''}<br/>`;
         col2 += `<strong>Email: </strong> ${workorder['customer_email'] || ''}<br/>`;
         col2 += `<strong>Phone: </strong> ${workorder['customer_phone'] || ''}<br/>`;
+        @endif
 
         let col3 = `<strong>Priority: </strong> ${workorder['priority'] || ''}<br/>`;
         col3 += `<strong>Delivery Location: </strong> ${workorder['delivery_location'] || ''}<br/>`;
@@ -661,7 +670,7 @@
 
         html += '<div class="row"><div class="col-12">';
         workorder['workorder_attachments']?.split(",").forEach(element => {
-            html += `<a href="${element}" target="_blank"><embed src="/${element}" class="product_image" width="80" height="80" ></a>`;
+            html += `<a href="${element}" target="_blank"><embed src="${element}" class="product_image quickview_image" width="80" height="80" ></a>`;
         })
         html += '</div></div>'
 

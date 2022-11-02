@@ -261,7 +261,13 @@ class WorkOrderController extends Controller
                 // file preview
                 if($value->documents ?? false) {
                     $temp_file_preview = explode(',', $value->documents->documents)[0];
-                    $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
+                    $temp_file_split_with_dot = explode('.', $temp_file_preview);
+                    $temp_file_ext = end($temp_file_split_with_dot);
+                    if($temp_file_ext == 'pdf' || $temp_file_ext == 'xlsx') {
+                        $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed"><button class="d-block btn btn-primary btn-sm" title="workorder-embed" value="/'. $temp_file_preview .'">view</button>';
+                    } else {
+                        $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
+                    }
                 } else {
                     $nestedData['file_preview'] = '';
                 }

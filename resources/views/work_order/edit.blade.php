@@ -35,302 +35,315 @@
     </div>
     <!--- header section  --->
 
+    <ul class="nav nav-tabs ml-4 mt-3 mb-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#tab-lines" role="tab" data-toggle="tab">{{trans('file.Lines')}}</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#tab-shipping" role="tab" data-toggle="tab">{{trans('file.Shipping')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#tab-workflow" role="tab" data-toggle="tab">{{trans('file.Workflow')}}</a>
+        </li>
+    </ul>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                        <div class="row">
-                            <div class="col-md-12">
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade show active" id="tab-lines">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Date')}} </label>
-                                            <input name="date" type="text" class="form-control" value="{{ $lims_workOrder_data->date}}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.customer')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="customer_id_hidden" value="{{ $lims_workOrder_data->customer_id }}" />
-                                            <select required id="customer_id" name="customer_id" class="selectpicker form-control" data-live-search="true" id="customer-id" title="Select customer..."
-                                            @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
-                                                @foreach($lims_customer_list as $customer)
-                                                <option value="{{$customer->id}}">{{$customer->name}} &#32; {{$customer->phone_number}} &#32; {{$customer->email}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Warehouse')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="warehouse_id_hidden" value="{{$lims_workOrder_data->warehouse_id}}" />
-                                            <select required name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse..."
-                                            @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
-                                                @foreach($lims_warehouse_list as $warehouse)
-                                                <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Priority')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="priority_hidden" value="{{$lims_workOrder_data->priority}}" />
-                                            <select name="priority" class="form-control"
-                                            @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
-                                                <option value="Regular">{{trans('file.Regular')}}</option>
-                                                <option value="Urgent">{{trans('file.Urgent')}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Delivery Location')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="delivery_location_id_hidden" value="{{$lims_workOrder_data->delivery_location_id}}" />
-                                            <select required name="delivery_location_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Delivery warehouse..."
-                                            @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
-                                                @foreach($lims_warehouse_list as $warehouse)
-                                                <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.reference')}}</label>
-                                            <p><strong>{{ $lims_workOrder_data->reference_no }}</strong></p>
-                                        </div>
-                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Date')}} </label>
+                                                    <input name="date" type="text" class="form-control" value="{{ $lims_workOrder_data->date}}" readonly>
+                                                </div>
+                                            </div>
 
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Expected Delivery Date')}}</label>
-                                            <input id="currentDate" value="{{ $lims_workOrder_data->expected_date }}" type="text" class="form-control" name="expected_date" @if(($lims_workOrder_data->work_order_status ?? 0) == 1) readonly @endif />
-                                        </div>
-                                    </div>
+                                            @if(!in_array("hide-workorder-customer-index", $all_permission))
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.customer')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="hidden" name="customer_id_hidden" value="{{ $lims_workOrder_data->customer_id }}" />
+                                                    <select required id="customer_id" name="customer_id" class="selectpicker form-control" data-live-search="true" id="customer-id" title="Select customer..."
+                                                    @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
+                                                        @foreach($lims_customer_list as $customer)
+                                                        <option value="{{$customer->id}}">{{$customer->name}} &#32; {{$customer->phone_number}} &#32; {{$customer->email}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            @endif
 
-                                    <div class="col-md-2">
-                                        <label>{{trans('file.Stage')}} </label>
-                                        <input type="text"  value="{{ $lims_workOrder_data->stage}}" name="stage" class="form-control" readonly/>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.User id')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="text" class="form-control"value="{{$lims_workOrder_data->user->name??''}}" readonly/>
-                                            <input type="hidden" name="user_id" class="form-control"value="{{$lims_workOrder_data->user_id}}" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Company')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="text" class="form-control"value="{{$lims_workOrder_data->company->name??''}}" readonly />
-                                            <input type="hidden" name="company_id" class="form-control"value="{{$lims_workOrder_data->company_id}}" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Sales Reference ID')}}</label>
-                                            <p><strong>{{ $lims_workOrder_data->sales_reference_no }}</strong></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Send To')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="send_to_hidden" value="{{$lims_workOrder_data->send_to}}" />
-                                            <select name="send_to" class="form-control" @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
-                                                <option value="Designer">Designer</option>
-                                                <option value="Workshop">Workshop</option>
-                                                <option value="Salesperson">Salesperson</option>
-                                                <option value="Admin">Admin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Warehouse')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="hidden" name="warehouse_id_hidden" value="{{$lims_workOrder_data->warehouse_id}}" />
+                                                    <select required name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse..."
+                                                    @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
+                                                        @foreach($lims_warehouse_list as $warehouse)
+                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Priority')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="hidden" name="priority_hidden" value="{{$lims_workOrder_data->priority}}" />
+                                                    <select name="priority" class="form-control"
+                                                    @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
+                                                        <option value="Regular">{{trans('file.Regular')}}</option>
+                                                        <option value="Urgent">{{trans('file.Urgent')}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Delivery Location')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="hidden" name="delivery_location_id_hidden" value="{{$lims_workOrder_data->delivery_location_id}}" />
+                                                    <select required name="delivery_location_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Delivery warehouse..."
+                                                    @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
+                                                        @foreach($lims_warehouse_list as $warehouse)
+                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.reference')}}</label>
+                                                    <p><strong>{{ $lims_workOrder_data->reference_no }}</strong></p>
+                                                </div>
+                                            </div>
 
-                                @if(($lims_workOrder_data->work_order_status ?? 0) != 1)
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <label>{{trans('file.Select Product')}}</label>
-                                            <div class="search-box input-group">
-                                                <button type="button" class="btn btn-secondary btn-lg"><i class="fa fa-barcode"></i></button>
-                                                <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
-                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#bulkProduct" title="{{ trans('file.Add multiple products from list') }}"> <i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Expected Delivery Date')}}</label>
+                                                    <input id="currentDate" value="{{ $lims_workOrder_data->expected_date }}" type="text" class="form-control" name="expected_date" @if(($lims_workOrder_data->work_order_status ?? 0) == 1) readonly @endif />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label>{{trans('file.Stage')}} </label>
+                                                <input type="text"  value="{{ $lims_workOrder_data->stage}}" name="stage" class="form-control" readonly/>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.User id')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="text" class="form-control"value="{{$lims_workOrder_data->user->name??''}}" readonly/>
+                                                    <input type="hidden" name="user_id" class="form-control"value="{{$lims_workOrder_data->user_id}}" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Company')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="text" class="form-control"value="{{$lims_workOrder_data->company->name??''}}" readonly />
+                                                    <input type="hidden" name="company_id" class="form-control"value="{{$lims_workOrder_data->company_id}}" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Sales Reference ID')}}</label>
+                                                    <p><strong>{{ $lims_workOrder_data->sales_reference_no }}</strong></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Send To')}}</label><i class="fa fa-asterisk"></i>
+                                                    <input type="hidden" name="send_to_hidden" value="{{$lims_workOrder_data->send_to}}" />
+                                                    <select name="send_to" class="form-control" @if(($lims_workOrder_data->work_order_status ?? 0) == 1) disabled @endif>
+                                                        <option value="Designer">Designer</option>
+                                                        <option value="Workshop">Workshop</option>
+                                                        <option value="Salesperson">Salesperson</option>
+                                                        <option value="Admin">Admin</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
+
+                                        @if(($lims_workOrder_data->work_order_status ?? 0) != 1)
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <label>{{trans('file.Select Product')}}</label>
+                                                    <div class="search-box input-group">
+                                                        <button type="button" class="btn btn-secondary btn-lg"><i class="fa fa-barcode"></i></button>
+                                                        <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
+                                                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#bulkProduct" title="{{ trans('file.Add multiple products from list') }}"> <i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
 
 
-                                <div class="row mt-4">
-                                    <div class="col-md-12">
-                                        <h5>{{trans('file.Order Table')}}<i class="fa fa-asterisk"></i></h5>
-                                        <div class="table-responsive mt-3">
-                                            <table id="myTable" class="table table-hover order-list">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ trans('file.Image') }}</th>
-                                                        <th>{{trans('file.name')}}</th>
-                                                        <th>{{trans('file.Description')}}</th>
-                                                        <th>{{trans('file.Code')}}</th>
-                                                        <th>{{trans('file.Category')}}</th>
-                                                        <th>{{trans('file.Order Type')}}</th>
-                                                        <th>{{trans('file.Color')}}</th>
-                                                        <th>{{trans('file.Size')}}</th>
-                                                        <th>{{trans('file.Quantity')}}</th>
-                                                        <th>{{trans('file.Note')}}</th>
-                                                        <th><i class="dripicons-trash"></i></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($lims_product_workOrder_data as $product_workOrder)
-                                                    <input type="hidden" name="data_product_id_hidden[]"
-                                                        class="data_product_id_hidden"
-                                                        value="{{ $product_workOrder->product_id }}">
-                                                    <tr>
-                                                        <?php
-                                                            $product_data = App\Product::With('category')->find($product_workOrder->product_id);
-                                                            $product_size = DB::table('sizes')->find($product_workOrder->id);
-                                                            if($product_workOrder->variant_id) {
-                                                                $product_variant_data = \App\ProductVariant::select('id', 'item_code')->FindExactProduct($product_data->id, $product_workOrder->variant_id)->first();
-                                                                $product_variant_id = $product_variant_data->id;
-                                                                $product_data->code = $product_variant_data->item_code;
-                                                                $product_data->category = $product_variant_data->category_id;
-                                                            }
-                                                            else
-                                                                $product_variant_id = null;
-                                                            $customer = DB::table('customers')->find($lims_workOrder_data->customer_id);
-                                                            $customer_group = DB::table('customer_groups')->find($customer->customer_group_id);
-                                                        ?>
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <h5>{{trans('file.Order Table')}}<i class="fa fa-asterisk"></i></h5>
+                                                <div class="table-responsive mt-3">
+                                                    <table id="myTable" class="table table-hover order-list">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>{{ trans('file.Image') }}</th>
+                                                                <th>{{trans('file.name')}}</th>
+                                                                <th>{{trans('file.Description')}}</th>
+                                                                <th>{{trans('file.Code')}}</th>
+                                                                <th>{{trans('file.Category')}}</th>
+                                                                <th>{{trans('file.Order Type')}}</th>
+                                                                <th>{{trans('file.Color')}}</th>
+                                                                <th>{{trans('file.Size')}}</th>
+                                                                <th>{{trans('file.Quantity')}}</th>
+                                                                <th>{{trans('file.Note')}}</th>
+                                                                <th><i class="dripicons-trash"></i></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($lims_product_workOrder_data as $product_workOrder)
+                                                            <input type="hidden" name="data_product_id_hidden[]"
+                                                                class="data_product_id_hidden"
+                                                                value="{{ $product_workOrder->product_id }}">
+                                                            <tr>
+                                                                <?php
+                                                                    $product_data = App\Product::With('category')->find($product_workOrder->product_id);
+                                                                    $product_size = DB::table('sizes')->find($product_workOrder->id);
+                                                                    if($product_workOrder->variant_id) {
+                                                                        $product_variant_data = \App\ProductVariant::select('id', 'item_code')->FindExactProduct($product_data->id, $product_workOrder->variant_id)->first();
+                                                                        $product_variant_id = $product_variant_data->id;
+                                                                        $product_data->code = $product_variant_data->item_code;
+                                                                        $product_data->category = $product_variant_data->category_id;
+                                                                    }
+                                                                    else
+                                                                        $product_variant_id = null;
+                                                                    $customer = DB::table('customers')->find($lims_workOrder_data->customer_id);
+                                                                    $customer_group = DB::table('customer_groups')->find($customer->customer_group_id);
+                                                                ?>
 
-                                                        <td>
-                                                            <img src="{{ asset('/images/product/' . $product_data->image) }}" alt="product image" class="product_image" width="80"
-                                                            height="80" />
-                                                        </td>
-                                                        <td>{{$product_data->name}} </td>
-                                                        <td>
-                                                            <textarea class="form-control qty" name="description[]"> {{$product_workOrder->description}} </textarea>
-                                                        </td>
-                                                        <td><input name="product_code[]" class="form-control" value="{{$product_data->code}}" readonly></td>
-                                                        <td>{{$product_data->category->name??''}}</td>
-                                                        <td class="d-none"><input name="work_order_unit_id[]" value="{{$product_data->sale_unit_id}}" readonly/></td>
-                                                        <td>
-                                                            <select class="form-control" name="order_type[]">
-                                                                @if(count($lims_ordertype_list) > 0)
-                                                                    @foreach($lims_ordertype_list as $order_type)
-                                                                    <option value="{{ $order_type->id }}" {{ old('order_type', $product_workOrder->order_type) == $order_type->id ? 'selected' : '' }}>{{ $order_type->order_type }}</option>
-                                                                    @endforeach
-                                                                @endif
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-control" name="color[]">
-                                                                @if(count($lims_color_list) > 0)
-                                                                    @foreach($lims_color_list as $color)
-                                                                    <option value="{{ $color->id }}" {{ old('color', $product_workOrder->color) == $color->id ? 'selected' : '' }}>{{ $color->color }}</option>
-                                                                    @endforeach
-                                                                @endif
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-control" name="size[]">
-                                                                @if(count($lims_size_list) > 0)
-                                                                    @foreach($lims_size_list as $size)
-                                                                    <option value="{{ $size->id }}" {{ old('size', $product_workOrder->size) == $size->id ? 'selected' : '' }}>{{ $size->size }}</option>
-                                                                    @endforeach
-                                                                @endif
-                                                            </select>
-                                                        </td>
+                                                                <td>
+                                                                    <img src="{{ asset('/images/product/' . $product_data->image) }}" alt="product image" class="product_image" width="80"
+                                                                    height="80" />
+                                                                </td>
+                                                                <td>{{$product_data->name}} </td>
+                                                                <td>
+                                                                    <textarea class="form-control qty" name="description[]"> {{$product_workOrder->description}} </textarea>
+                                                                </td>
+                                                                <td><input name="product_code[]" class="form-control" value="{{$product_data->code}}" readonly></td>
+                                                                <td>{{$product_data->category->name??''}}</td>
+                                                                <td class="d-none"><input name="work_order_unit_id[]" value="{{$product_data->sale_unit_id}}" readonly/></td>
+                                                                <td>
+                                                                    <select class="form-control" name="order_type[]">
+                                                                        @if(count($lims_ordertype_list) > 0)
+                                                                            @foreach($lims_ordertype_list as $order_type)
+                                                                            <option value="{{ $order_type->id }}" {{ old('order_type', $product_workOrder->order_type) == $order_type->id ? 'selected' : '' }}>{{ $order_type->order_type }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" name="color[]">
+                                                                        @if(count($lims_color_list) > 0)
+                                                                            @foreach($lims_color_list as $color)
+                                                                            <option value="{{ $color->id }}" {{ old('color', $product_workOrder->color) == $color->id ? 'selected' : '' }}>{{ $color->color }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" name="size[]">
+                                                                        @if(count($lims_size_list) > 0)
+                                                                            @foreach($lims_size_list as $size)
+                                                                            <option value="{{ $size->id }}" {{ old('size', $product_workOrder->size) == $size->id ? 'selected' : '' }}>{{ $size->size }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
 
-                                                        <td class="col-sm-3">
-                                                            <div class="input-group">
-                                                                <span class="input-group-btn">
-                                                                    <button type="button" class="btn btn-default minus"><span class="dripicons-minus"></span></button>
-                                                                </span>
-                                                                <input type="text" name="qty[]" class="form-control quantity numkey input-number" value="{{$product_workOrder->qty}}" step="any" required>
-                                                                <span class="input-group-btn">
-                                                                    <button type="button" class="btn btn-default plus"><span class="dripicons-plus"></span></button>
-                                                                </span>
-                                                            </div>
-                                                        </td>
+                                                                <td class="col-sm-3">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-btn">
+                                                                            <button type="button" class="btn btn-default minus"><span class="dripicons-minus"></span></button>
+                                                                        </span>
+                                                                        <input type="text" name="qty[]" class="form-control quantity numkey input-number" value="{{$product_workOrder->qty}}" step="any" required>
+                                                                        <span class="input-group-btn">
+                                                                            <button type="button" class="btn btn-default plus"><span class="dripicons-plus"></span></button>
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
 
 
-                                                        <td><input type="text" class="form-control" name="note[]" value="{{$product_workOrder->note}}" /></td>
-                                                        <td><button type="button" class="ibtnDel btn btn-md btn-danger">{{trans("file.delete")}}</button></td>
-                                                        <input type="hidden" class="product-id" name="product_id[]" value="{{$product_data->id}}"/>
-                                                        <input type="hidden" name="product_variant_id[]" value="{{$product_variant_id}}"/>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                                                <td><input type="text" class="form-control" name="note[]" value="{{$product_workOrder->note}}" /></td>
+                                                                <td><button type="button" class="ibtnDel btn btn-md btn-danger">{{trans("file.delete")}}</button></td>
+                                                                <input type="hidden" class="product-id" name="product_id[]" value="{{$product_data->id}}"/>
+                                                                <input type="hidden" name="product_variant_id[]" value="{{$product_variant_id}}"/>
+                                                            </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="hidden" id="work_order_status" name="work_order_status" value="{{$lims_workOrder_data->work_order_status}}">
-                                        {{-- <div class="form-group">
-                                            <label>{{trans('file.Work Order Status')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="work_order_status_hidden" value="{{$lims_workOrder_data->work_order_status}}" />
-                                            <select name="work_order_status" class="form-control">
-                                                <option value="0">{{trans('file.Draft')}}</option>
-                                                <option value="1">{{trans('file.Completed')}}</option>
-                                                <option value="2">{{trans('file.Pending')}}</option>
-                                            </select>
-                                        </div> --}}
-                                    </div>
-                                    {{-- <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="hidden" id="work_order_status" name="work_order_status" value="{{$lims_workOrder_data->work_order_status}}">
+                                            </div>
+
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Work Order Note')}}</label>
+                                                    <textarea rows="5" class="form-control" name="work_order_note">{{ $lims_workOrder_data->work_order_note }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>{{trans('file.Staff Note')}}</label>
+                                                    <textarea rows="5" class="form-control" name="staff_note">{{ $lims_workOrder_data->staff_note }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
-                                            <label>{{trans('file.Send To')}}</label><i class="fa fa-asterisk"></i>
-                                            <input type="hidden" name="send_to_hidden" value="{{$lims_workOrder_data->send_to}}" />
-                                            <select name="send_to" class="form-control">
-                                                <option value="Designer">Designer</option>
-                                                <option value="Workshop">Workshop</option>
-                                                <option value="Salesperson">Salesperson</option>
-                                                <option value="Admin">Admin</option>
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Work Order Note')}}</label>
-                                            <textarea rows="5" class="form-control" name="work_order_note">{{ $lims_workOrder_data->work_order_note }}</textarea>
+                                            <input type="button" value="{{trans('file.submit')}}" class="btn buttons-print" id="submit-button" onclick="handleFormSubmit()">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Staff Note')}}</label>
-                                            <textarea rows="5" class="form-control" name="staff_note">{{ $lims_workOrder_data->staff_note }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="button" value="{{trans('file.submit')}}" class="btn buttons-print" id="submit-button" onclick="handleFormSubmit()">
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-4 mb-4">
+                            <table class="table table-bordered table-condensed totals">
+                                <td><strong>{{trans('file.Items')}}</strong>
+                                    <span class="pull-right" id="item">0.00</span>
+                                </td>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="tab-shipping">
+                        Shipping
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="tab-workflow">
+                        Workflow
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
+
+
     @include('multifile_management.partials.attachment_modal', [
         'edit' => true,
         'documents' => $lims_workOrder_data->documents,
     ])
     {!! Form::close() !!}
 
-    <div class="container-fluid mt-4 mb-4">
-        <table class="table table-bordered table-condensed totals">
-            <td><strong>{{trans('file.Items')}}</strong>
-                <span class="pull-right" id="item">0.00</span>
-            </td>
-        </table>
-    </div>
 
     <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog">

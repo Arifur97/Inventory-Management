@@ -45,6 +45,29 @@ class RoleController extends Controller
         return redirect('role')->with('message', 'Data inserted successfully');
     }
 
+    public function copyRole($id) {
+        $lims_role_data = Roles::find($id);
+        $new_role = Roles::create([
+            'name' => $lims_role_data->name . ' copy',
+            'description' => $lims_role_data->description,
+            'guard_name' => $lims_role_data->guard_name,
+            'shortcut_form_id' => $lims_role_data->shortcut_form_id,
+            'is_active' => $lims_role_data->is_active,
+        ]);
+
+        $old_role_permission = Role::firstOrCreate(['id' => $lims_role_data->id]);
+        $new_role_permission = Role::firstOrCreate(['id' => $new_role->id]);
+
+        $permissions = Role::findByName($lims_role_data->name)->permissions;
+        foreach ($permissions as $permission) {
+            if($old_role_permission->hasPermissionTo($permission)){
+                $new_role_permission->givePermissionTo($permission);
+            }
+        }
+
+        return redirect('role')->with('message', 'Data inserted successfully');
+    }
+
     public function edit($id)
     {
         if(Auth::user()->role_id <= 2) {

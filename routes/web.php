@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('role/shortcuts_permission/{id}/update', 'RoleController@updateShortcutsPermission')->name('role.permission.shortcuts.update');
 	Route::get('role/permission/{id}', 'RoleController@permission')->name('role.permission');
 	Route::post('role/set_permission', 'RoleController@setPermission')->name('role.setPermission');
+	Route::get('role/copy_role/{id}', 'RoleController@copyRole')->name('role.copy_role');
 	Route::resource('role', 'RoleController');
 
 	Route::post('importunit', 'UnitController@importUnit')->name('unit.import');

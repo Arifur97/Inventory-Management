@@ -76,6 +76,9 @@
                                 </li>
                                 {{ Form::close() }}
                                 @endif
+                                <li>
+                                    <a href="{{ route('role.copy_role', ['id' => $role->id]) }}" class="btn btn-link"><i class="fa fa-star"></i> Copy Role</a>
+                                </li>
                             </ul>
                         </div>
                     </td>

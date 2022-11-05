@@ -67,6 +67,9 @@ class WorkOrderController extends Controller
             if($request->input('priority')) $priority = $request->input('priority');
             else $priority = null;
 
+            if($request->input('work_order_status')) $work_order_status = $request->input('work_order_status');
+            else $work_order_status = null;
+
             $permissions = Role::findByName($role->name)->permissions;
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
@@ -76,7 +79,7 @@ class WorkOrderController extends Controller
             $lims_ordertype_list = Ordertype::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_account_list = Account::where('is_active', true)->get();
-            $lims_customer_list = Customer::all();
+            $lims_customer_list = Customer::where('is_active', true)->orderBy('name')->get();
             return view('work_order.index', compact( 'lims_account_list', 'lims_warehouse_list', 'lims_customer_list', 'all_permission', 'warehouse_id', 'starting_date', 'ending_date', 'customer_id', 'lims_ordertype_list', 'order_type'));
         }
 
@@ -127,6 +130,9 @@ class WorkOrderController extends Controller
         if($request->input('priority')) $priority = $request->input('priority');
         else $priority = null;
 
+        if($request->input('work_order_status')) $work_order_status = $request->input('work_order_status');
+        else $work_order_status = null;
+
         $lims_work_order = WorkOrder::with('warehouse', 'customer', 'documents', 'products', 'user', 'company');
 
         $totalData = $lims_work_order->count();
@@ -154,6 +160,9 @@ class WorkOrderController extends Controller
             })
             ->when($priority != null, function ($q) use ($priority) {
                 return $q->where('priority', '=', $priority);
+            })
+            ->when($work_order_status != null, function ($q) use ($work_order_status) {
+                return $q->where('work_order_status', '=', $work_order_status);
             })
             ->when($order_type != null, function ($q) use ($order_type) {
                 return $q->whereHas('products', function($query) use ($order_type) {
@@ -264,7 +273,7 @@ class WorkOrderController extends Controller
                     $temp_file_split_with_dot = explode('.', $temp_file_preview);
                     $temp_file_ext = end($temp_file_split_with_dot);
                     if($temp_file_ext == 'pdf' || $temp_file_ext == 'xlsx') {
-                        $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed"><button class="d-block btn btn-primary btn-sm" title="workorder-embed" value="/'. $temp_file_preview .'">view</button>';
+                        $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed"><button class="d-block btn btn-primary btn-sm" title="workorder-embed" value="/'. $temp_file_preview .'">View PDF</button>';
                     } else {
                         $nestedData['file_preview'] = '<embed src="/'. $temp_file_preview .'" type="" height="80" width="80" class="product_image" title="workorder-embed">';
                     }
@@ -361,7 +370,7 @@ class WorkOrderController extends Controller
                 $action_btn = '<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>';
 
                 $action_dropdown_view = '<li>
-                        <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i> '. trans('file.View') .'</button>
+                        <button type="button" class="btn btn-link view" onclick="viewWorkOrder(this);"><i class="fa fa-eye"></i> '. trans('file.View') .'</button>
                     </li>';
                 $action_dropdown_edit = '<li>
                         <a class="btn btn-link" href="'. route('workorder.edit', $value->id) .'">
@@ -657,7 +666,14 @@ class WorkOrderController extends Controller
             $lims_product_list = Product::all();
             $lims_workOrder_data = WorkOrder::with('documents', 'user', 'company')->find($id);
             $lims_product_workOrder_data = ProductWorkOrder::where('work_order_id', $id)->get();
-            return view('work_order.edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_workOrder_data', 'lims_ordertype_list', 'lims_color_list', 'lims_size_list', 'lims_product_workOrder_data', 'lims_product_list'));
+
+            $permissions = Role::findByName($role->name)->permissions;
+            foreach ($permissions as $permission)
+                $all_permission[] = $permission->name;
+            if(empty($all_permission))
+                $all_permission[] = 'dummy text';
+
+            return view('work_order.edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_workOrder_data', 'lims_ordertype_list', 'lims_color_list', 'lims_size_list', 'lims_product_workOrder_data', 'lims_product_list', 'all_permission'));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -765,8 +781,9 @@ class WorkOrderController extends Controller
                 productWorkOrder::create($product_sale);
         }
 
+
         $lims_work_order_data->update($data);
-        $lims_customer_data = Customer::find($data['customer_id_hidden']);
+        // $lims_customer_data = Customer::find($data['customer_id_hidden']);
         $message = 'Work Order updated successfully';
         if($redirectStatus) {
             return redirect()->back()->with('message', 'Saved successfully');

@@ -405,7 +405,57 @@
 						            	</div>
 						            </td>
 						        </tr>
-
+								<tr>
+						            <td>Purchase Receiving</td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("purchase-receiving-index", $all_permission))
+								                <input type="checkbox" value="1" id="purchase-receiving-index" name="purchase-receiving-index" checked>
+								                @else
+								                <input type="checkbox" value="1" id="purchase-receiving-index" name="purchase-receiving-index">
+								                @endif
+								                <label for="purchase-receiving-index"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("purchase-receiving-add", $all_permission))
+								                <input type="checkbox" value="1" id="purchase-receiving-add" name="purchase-receiving-add" checked>
+								                @else
+								                <input type="checkbox" value="1" id="purchase-receiving-add" name="purchase-receiving-add">
+								                @endif
+								                <label for="purchase-receiving-add"></label>
+								            </div>
+						                </div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+							                <div class="checkbox">
+								                @if(in_array("purchase-receiving-edit", $all_permission))
+								                <input type="checkbox" value="1" id="purchase-receiving-edit" name="purchase-receiving-edit" checked>
+								                @else
+								                <input type="checkbox" value="1" id="purchase-receiving-edit" name="purchase-receiving-edit">
+								                @endif
+								                <label for="purchase-receiving-edit"></label>
+								            </div>
+						            	</div>
+						            </td>
+						            <td class="text-center">
+						                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false">
+						                	<div class="checkbox">
+								                @if(in_array("purchase-receiving-delete", $all_permission))
+								                <input type="checkbox" value="1" id="purchase-receiving-delete" name="purchase-receiving-delete" checked>
+								                @else
+								                <input type="checkbox" value="1" id="purchase-receiving-delete" name="purchase-receiving-delete">
+								                @endif
+								                <label for="purchase-receiving-delete"></label>
+								            </div>
+						            	</div>
+						            </td>
+						        </tr>
 						        <tr>
 						            <td>{{trans('file.Purchase Return')}}</td>
 						            <td class="text-center">

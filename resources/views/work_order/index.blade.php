@@ -103,7 +103,8 @@
         <div class="modal-content">
             <div class="container mt-3 pb-2 border-bottom">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <a id="workorder-details-modal-edit" class="btn btn-default btn-sm" href="#"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
                         <button id="print-btn" type="button" class="btn btn-default btn-sm d-print-none" onclick="printWorkorder()"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
                         {{ Form::open(['route' => 'workorder.sendmail', 'method' => 'post', 'class' => 'sendmail-form'] ) }}
                             <input type="hidden" name="workorder_id" id="workorder-details-workorderid">
@@ -113,7 +114,7 @@
                     <div class="col-md-6">
                         <h3 id="exampleModalLabel" class="modal-title text-center container-fluid">{{trans('file.Work Order')}}</h3>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close d-print-none"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                 </div>
@@ -226,8 +227,9 @@
                     </div>
                 </div>
 
-                  {{-- customer --}}
-                  <div class="col-md-4">
+                {{-- customer --}}
+                @if(!in_array("hide-workorder-customer-index", $all_permission))
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>{{trans('file.Customer')}}</strong> </label>
                         <div class="input-group">
@@ -236,20 +238,21 @@
                                 @foreach($lims_customer_list as $customer)
                                     @if(is_array($customer_id))
                                         @if(in_array($customer->id, $customer_id))
-                                            <option selected value="{{$customer->id}}">{{$customer->name}}</option>
+                                            <option selected value="{{$customer->id}}">{{$customer->name}} || {{$customer->phone_number}} || {{$customer->email}}</option>
                                         @else
-                                            <option value="{{$customer->id}}">{{$customer->name}}</option>
+                                            <option value="{{$customer->id}}">{{$customer->name}} || {{$customer->phone_number}} || {{$customer->email}}</option>
                                         @endif
                                     @elseif($customer->id == $customer_id)
-                                        <option selected value="{{$customer->id}}">{{$customer->name}}</option>
+                                        <option selected value="{{$customer->id}}">{{$customer->name}} || {{$customer->phone_number}} || {{$customer->email}}</option>
                                     @else
-                                        <option value="{{$customer->id}}">{{$customer->name}}</option>
+                                        <option value="{{$customer->id}}">{{$customer->name}} || {{$customer->phone_number}} || {{$customer->email}}</option>
                                     @endif
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 </div>
+                @endif
 
                 {{-- Order Type --}}
                 <div class="col-md-4">
@@ -303,7 +306,7 @@
                     </div>
                 </div>
 
-
+                {{-- Priority --}}
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>{{trans('file.Priority')}}</label>
@@ -315,8 +318,18 @@
                     </div>
                 </div>
 
-
-
+                {{-- status --}}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>{{trans('file.status')}}</label>
+                        <select id="filter-workorder-status" name="work_order_status" class="selectpicker form-control">
+                            <option value="">All</option>
+                            <option value="0" @if(request('work_order_status') == '0') selected @endif>Draft</option>
+                            <option value="2" @if(request('work_order_status') == '2') selected @endif>Pending</option>
+                            <option value="1" @if(request('work_order_status') == '1') selected @endif>Complete</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -342,6 +355,7 @@
     let reference_no = $("#reference_no").val();
     let order_type = $("select[name=order_type]").val();
     let priority = $("select[name=priority]").val();
+    let work_order_status = $("#filter-workorder-status").val();
 
     window.addEventListener('keydown', function (event) {
         if (event.shiftKey && event.code === 'KeyA') {
@@ -362,6 +376,11 @@
         return false;
     }
 
+    function viewWorkOrder(e) {
+        var workOrder = $(e).parent().parent().parent().parent().parent().data('workorder');
+        workOrderDetails(workOrder);
+    }
+
     $(document).on("click", "tr.workorder-link td:not(:first-child, :last-child)", function(e) {
         if(e.target.title == 'workorder-embed') {
             $('#workorder-embed-data').attr('src', e.target.src || e.target.value) ;
@@ -370,11 +389,6 @@
             let workorder = $(this).parent().data('workorder');
             workOrderDetails(workorder);
         }
-    });
-
-    $(".view").on("click", function(){
-        var workOrder = $(this).parent().parent().parent().parent().parent().data('workOrder');
-        workOrderDetails(workOrder);
     });
 
     function printWorkorder() {
@@ -402,6 +416,7 @@
                 reference_no: reference_no,
                 order_type: order_type,
                 priority: priority,
+                work_order_status: work_order_status,
             },
             dataType: "json",
             type:"post"
@@ -411,9 +426,11 @@
             $(row).addClass('workorder-link');
             $(row).attr('data-workorder', JSON.stringify(data));
             if(data['work_order_status'] == 2 && data['priority'] == "Urgent") {
-                $(row).attr('style', 'color: crimson');
+                $(row).attr('style', 'color: crimson;  font-weight: bold;');
             } else if(data['work_order_status'] == 0) {
                 $(row).attr('style', 'color: black; font-style: italic');
+            } else if(data['work_order_status'] == 2) {
+                $(row).attr('style', 'color: darkgoldenrod; font-weight: bold;');
             } else {
                 $(row).attr('style', 'color: black');
             }
@@ -638,6 +655,8 @@
 
 
     function workOrderDetails(workorder){
+        $('#workorder-details-modal-edit').attr('href', `/workorder/${workorder['id'] || '#'}/edit`);
+
         let col1 = `<strong>ID: </strong> ${workorder['id'] || ''}<br/>`;
         col1 += `<strong>Date: </strong> ${workorder['date'] || ''}<br/>`;
         col1 += `<strong>Order No: </strong> ${workorder['reference_no'] || ''}<br/>`;

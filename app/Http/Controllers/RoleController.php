@@ -404,6 +404,42 @@ class RoleController extends Controller
         else
             $role->revokePermissionTo('purchase-return-delete');
 
+        if($request->has('purchase-receiving-index')){
+            $permission = Permission::firstOrCreate(['name' => 'purchase-receiving-index']);
+            if(!$role->hasPermissionTo('purchase-receiving-index')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('purchase-receiving-index');
+
+        if($request->has('purchase-receiving-add')){
+            $permission = Permission::firstOrCreate(['name' => 'purchase-receiving-add']);
+            if(!$role->hasPermissionTo('purchase-receiving-add')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('purchase-receiving-add');
+
+        if($request->has('purchase-receiving-edit')){
+            $permission = Permission::firstOrCreate(['name' => 'purchase-receiving-edit']);
+            if(!$role->hasPermissionTo('purchase-receiving-edit')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('purchase-receiving-edit');
+
+        if($request->has('purchase-receiving-delete')){
+            $permission = Permission::firstOrCreate(['name' => 'purchase-receiving-delete']);
+            if(!$role->hasPermissionTo('purchase-receiving-delete')){
+                $role->givePermissionTo($permission);
+            }
+        }
+        else
+            $role->revokePermissionTo('purchase-receiving-delete');
+
         if($request->has('account-index')){
             $permission = Permission::firstOrCreate(['name' => 'account-index']);
             if(!$role->hasPermissionTo('account-index')){
